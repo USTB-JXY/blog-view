@@ -1,0 +1,4754 @@
+Fitzpatrick: Hello, and this is,
+Fitzpatrick：您好，
+
+despite other slides to the contrary,
+尽管有其他幻灯片与此相反，这就是
+
+"The Myth of the 'Genius Programmer.'"
+“‘天才程序员’的神话。”在
+
+And before we get started...
+我们开始之前……
+
+Collins-Sussman: Should we do some introductions?
+Collins-Sussman：我们应该做一些介绍吗？
+
+Fitzpatrick: Should we do-- Your mic--can't hear your mic.
+Fitzpatrick：我们应该这样做吗——你的麦克风——听不到你的麦克风声音。
+
+Collins-Sussman: Can't hear my mic at all.
+Collins-Sussman：根本听不到我的麦克风声音。
+
+Well, let's fix that.
+好吧，让我们解决这个问题。
+
+Hey. So let's do some introductions.
+嘿。 那么我们就来做一些介绍吧。
+
+Who are we?
+我们是谁？ 菲茨
+
+Fitzpatrick: My name is Brian Fitzpatrick.
+帕特里克：我叫布莱恩·菲茨帕特里克。
+
+I usually go by Fitz.
+我通常叫菲茨。
+
+Collins-Sussman: My name is Ben Collins-Sussman.
+柯林斯-萨斯曼：我的名字是本·柯林斯-萨斯曼。
+
+I usually go by Ben Collins-Sussman.
+我通常叫本·柯林斯·苏斯曼。
+
+Fitzpatrick: And we're basically a couple
+Fitzpatrick：我们基本上是一对
+
+of long-time Version Control geeks.
+长期的版本控制极客。
+
+We worked on Subversion years ago.
+几年前我们就参与了 Subversion。
+
+Collins-Sussman: And we have a lot of experience
+Collins-Sussman：我们
+
+in the Open Source world,
+在开源世界有很多经验，
+
+so we tend to speak about things that are related to Open Source,
+所以我们倾向于谈论与开源相关的事情，
+
+but not necessarily related to Open Source.
+但不一定与开源相关。
+
+Fitzpatrick: Right. When we started at Google,
+菲茨帕特里克：对。当我们开始在 Google 工作时，
+
+we worked on code.google.com.
+我们在 code.google.com 上工作。 实际上，
+
+We still work with Google Code, actually.
+我们仍在使用 Google Code。
+
+Collins-Sussman: Absolutely. And if you're interested
+柯林斯-萨斯曼：当然。如果您
+
+in the project-hosting service, which is what my team works on,
+对项目托管服务感兴趣，这就是我的团队所做的工作，
+
+we're doing a talk tomorrow
+明天我们将讨论在
+
+about our Mercurial implementation
+
+
+on top of Google infrastructure,
+Google 基础设施之上的 Mercurial 实施，
+
+which is a new feature on Google Code.
+这是Google Code 上的一项新功能。
+
+So come see that.
+所以来看看吧。
+
+Fitzpatrick: But enough about us.
+Fitzpatrick：关于我们就够了。
+
+Who are you?
+你是谁？
+
+So we have a couple questions for you,
+我们有几个问题要问您，
+
+so we can get an idea about the audience.
+以便我们了解观众。
+
+Collins-Sussman: Survey. Fitzpatrick: Survey.
+柯林斯-萨斯曼：调查。菲茨帕特里克：调查。
+
+So how many people in this room write code
+那么这个房间里有多少人
+
+entirely by themselves only?
+完全自己编写代码呢？
+
+Never with other people.
+从来不和其他人在一起。
+
+Collins-Sussman: Or how many people
+Collins-Sussman：或者有多少人
+
+like writing code by themselves?
+喜欢自己编写代码？
+
+Fitzpatrick: All right, yeah.
+菲茨帕特里克：好吧，是的。
+
+Collins-Sussman: All right, that's great.
+Collins-Sussman：好的，那太好了。
+
+Fitzpatrick: So how many people work in teams?
+Fitzpatrick：那么有多少人在团队中工作？
+
+Okay, that's good. Everybody's awake.
+嗯，很好。大家都醒了。 作为开发过程的一部分，
+
+How many people in this room do code reviews
+这个房间里有多少人进行代码审查
+
+as part of your development process?
+？
+
+Collins-Sussman: Wow.
+柯林斯-萨斯曼：哇。
+
+Fitzpatrick: Is that good or bad?
+菲茨帕特里克：这是好是坏？
+
+Collins-Sussman: I'm impressed. That's great.
+柯林斯-萨斯曼：我印象深刻。 那太棒了。
+
+Fitzpatrick: All right, one last question.
+Fitzpatrick：好吧，最后一个问题。
+
+Who is afraid of looking stupid in front of other people?
+谁害怕在别人面前显得愚蠢？
+
+All right, we're in the right place.
+好吧，我们来对地方了。
+
+Excellent.
+出色的。
+
+Collins-Sussman: So before we go on,
+柯林斯-萨斯曼：所以在我们继续之前，
+
+we should let you know these are very opinionated talks
+我们应该让您知道这些都是
+
+that Fitz and I give every year.
+菲茨和我每年都会进行的非常固执己见的演讲。
+
+They're really based on our own subjective experience,
+它们确实基于我们自己的主观经验，
+
+and that's fine.
+这很好。
+
+You know, if we say things that upset you or anger you,
+你知道，如果我们说了一些让你心烦意乱或激怒你的话，
+
+we've done our job. Fitzpatrick: Right.
+我们就完成了我们的工作。菲茨帕特里克：对。
+
+Collins-Sussman: And we encourage you,
+Collins-Sussman：我们鼓励您，
+
+if you don't like it, you can...
+如果您不喜欢它，您可以...
+
+Fitzpatrick: If you have different opinions,
+Fitzpatrick：如果您有不同意见，
+
+please get your own talk at your own conference.
+请在您自己的会议上发表自己的看法。
+
+[laughter]
+[笑声]
+
+So before we go, though,
+不过，在我们走之前，
+
+we're gonna have you do a little more work.
+我们会让你做更多的工作。
+
+You're gonna have to read a few slides
+您必须阅读几张幻灯片
+
+and check out some of our quotes here
+并查看我们在这里提供的一些引文
+
+that we've got.
+。
+
+Collins-Sussman: What is this talk about?
+Collins-Sussman：这次谈话是关于什么的？
+
+Fitzpatrick: We're not gonna read them to you,
+Fitzpatrick：我们不会读给你听，
+
+so here's the first one.
+所以这是第一个。
+
+All right. The second one.
+好的。第二个。
+
+Okay, and now for a really good one.
+好的，现在来说说一个非常好的。
+
+Collins-Sussman: Okay.
+柯林斯-萨斯曼：好的。
+
+So what do these all have in common?
+那么这些都有什么共同点呢？
+
+You guys, any ideas here?
+你们，有什么想法吗？
+
+All right, it's a rhetorical question, but...
+好吧，这是一个反问句，但是……
+
+Right, so what's going on here,
+好吧，所以这里发生了什么事，
+
+there's a lot of insecurity going on, right?
+有很多不安全感，对吗？
+
+This is a common feeling that we all have.
+这是我们大家都有的共同感受。
+
+So we're gonna go off of this.
+所以我们要结束这个。
+
+We're actually getting these responses last year at I/O.
+事实上，我们在去年的 I/O 大会上就得到了这些回应。
+
+People were coming up to me and saying these sort of things.
+人们走过来对我说这些话。
+
+So it got us thinking about,
+所以这让我们思考，
+
+"Well, what's going on with psychology here?
+“那么，心理学到底怎么了？
+
+"What's going on in people's heads?
+”人们的头脑里到底在想什么？
+
+"Why do they want to hide their code so much?
+“为什么他们这么想隐藏他们的代码？
+
+What's really at the bottom of this?"
+这到底是什么？”
+
+Which is how we came up with this talk
+这就是我们提出这个演讲的方式，也是
+
+and where we get this idea
+我们得出
+
+of the myth of the genius programmer.
+天才程序员神话的想法的来源。
+
+Let's do one more quote.
+让我们再引用一次。
+
+Fitzpatrick: Okay.
+菲茨帕特里克：好的。
+
+Collins-Sussman: Interesting. "Pervasive elitism."
+柯林斯-萨斯曼：有趣。“精英主义普遍存在。”
+
+Fitzpatrick: This is rooted out of a general desire
+菲茨帕特里克：这是出于
+
+to not look stupid.
+不想显得愚蠢的普遍愿望。 我想，
+
+It's sort of a-- you know, everybody, I think,
+你知道，每个人
+
+wants to look like a smart developer.
+都想看起来像一个聪明的开发人员。
+
+I know I certainly do, to some extent.
+我知道在某种程度上我当然知道。
+
+And--but there's a lot of different reasons
+但是
+
+behind why people do this, and we're gonna start
+人们这样做的背后有很多不同的原因，我们将从
+
+with something a little almost seemingly unrelated.
+一些看似无关的事情开始。
+
+But why do people buy products endorsed by celebrities, okay?
+但为什么人们会购买名人代言的产品呢？
+
+Michelle Obama wore this dress to the Inauguration, okay?
+米歇尔·奥巴马在就职典礼上穿了这件衣服，好吗？
+
+Boom, suddenly, it sold out, all right?
+嘭，突然就卖完了，好吗？
+
+Collins-Sussman: Or Michael Jordan
+Collins-Sussman：或者迈克尔·乔丹
+
+wears Nike shoes, right?
+穿耐克鞋，对吧？
+
+Everyone wants to buy Nikes
+每个人都想买耐克，
+
+'cause they love Jordan or basketball.
+因为他们喜欢乔丹或篮球。
+
+What's really going on here?
+这里究竟发生了什么？
+
+Like, do you actually believe that if you buy Air Jordans,
+就像，你真的相信如果你买了 Air Jordans，
+
+you're gonna be as good as Michael Jordan?
+你就会像迈克尔·乔丹一样优秀吗？
+
+Fitzpatrick: Yes. Collins-Sussman: No.
+菲茨帕特里克：是的。Collins-Sussman：没有。
+
+But there's something going on, right?
+但是确实有事情发生，对吧？ 这里
+
+There's some nugget of human psychology going on here,
+存在一些人类心理学的核心内容，
+
+where it's in our instinct to find celebrities,
+我们本能地寻找名人，
+
+find people to idolize and want to be like those people,
+找到崇拜的人，并希望成为像那些人一样的人，
+
+and we sort of latch on to whatever simple behaviors
+我们会抓住任何简单的行为
+
+or materialistic pieces that remind us
+或物质主义的东西，让我们想起
+
+of this celebrity or this behavior.
+这个名人或这种行为。
+
+Fitzpatrick: That's true in the world of programming as well.
+Fitzpatrick：在编程领域也是如此。
+
+I mean, we have our heroes.
+我的意思是，我们有我们的英雄。
+
+We have Linus Torvalds, to some extent, Bill Gates even.
+我们有莱纳斯·托瓦兹（Linus Torvalds），在某种程度上，甚至还有比尔·盖茨（Bill Gates）。
+
+Guido here at Google--
+Guido 在 Google——
+
+you know, I mean, he wrote Python himself, right?
+你知道，我的意思是，他自己编写了Python，对吧？
+
+Not quite true, you know?
+不完全正确，你知道吗？
+
+Collins-Sussman: Did Linus write Linux all by himself?
+Collins-Sussman：Linux 是 Linus自己写的吗？
+
+Fitzpatrick: Right. We have Kernighan and Pike
+菲茨帕特里克：对。我们有克尼根、派克
+
+and Kernighan and Ritchie.
+、克尼根和里奇。
+
+I mean, these guys don't always deserve all the credit.
+我的意思是，这些人并不总是值得所有的荣誉。
+
+They certainly deserve some of the credit.
+他们当然应该得到一些荣誉。
+
+They're the leaders, right?
+他们是领导者，对吗？
+
+Or they sort of started something,
+或者他们开始​​了一些事情，
+
+but they're mythologized.
+但他们被神话化了。
+
+So the personas that they become
+因此，他们所形成的人物角色在某种程度上
+
+are bigger than life, to some extent,
+比生活更重要，
+
+and, to some extent,
+并且在某种程度上
+
+rooted in a little nugget of truth or fact
+植根于一点点真理或事实
+
+and a whole lot of myth.
+以及一大堆神话。
+
+Collins-Sussman: So that's why we have this myth.
+Collins-Sussman：这就是我们有这个神话的原因。
+
+When we say "the myth of the genius programmer,"
+当我们说“天才程序员的神话”时，
+
+we're talking about the myth of, "Hey, here's a genius,
+我们谈论的是这样的神话：“嘿，这是一个天才，
+
+"and genius goes off in a cave and writes this brilliant thing
+”天才走进一个山洞，写下了这个辉煌的东西
+
+"and then reveals it to the world
+“然后向世界展示它，
+
+and, 'Oh, my gosh, this person's famous forever,'" right?
+，‘哦，天哪，这个人永远出名，’”对吧？
+
+Reality is, that's not really how it works at all.
+现实是，事情根本不是这样的。
+
+They're--In fact, geniuses...
+事实上，他们是天才……
+
+they are so incredibly rare that, I mean, it's almost--
+他们非常罕见，我的意思是，这几乎是
+
+it's kind of a meaningless term, right?
+一个毫无意义的术语，对吧？
+
+Fitzpatrick: Right. Collins-Sussman: Those folks--
+菲茨帕特里克：对。Collins-Sussman：那些人——
+
+That myth just isn't true.
+这个神话不是真的。
+
+Fitzpatrick: So, yeah, the ultimate geek fantasy
+菲茨帕特里克：所以，是的，极客的终极幻想
+
+is to go off into your cave and work and type in code
+就是走进你的洞穴工作并输入代码，
+
+and then shock the world
+然后
+
+with your brilliant new invention, you know?
+用你出色的新发明震惊世界，你知道吗？
+
+You--It's a desire to be seen as a genius by your peers.
+你——渴望被同龄人视为天才。
+
+Collins-Sussman: But there's a flip side to that too, right?
+Collins-Sussman：但这也有反面，对吧？
+
+It's not just about, "I want everyone to--
+这不仅仅是“我希望每个人——
+
+I want to be a genius and shock the world."
+我想成为一个天才并震惊世界。”
+
+It's also, "I'm insecure."
+这也是“我没有安全感”。
+
+And what I mean by that is, you know,
+我的意思是，你知道，
+
+"I also don't want people to see my mistakes.
+“我也不希望人们看到我的错误。
+
+"All right, maybe I won't be a genius.
+”好吧，也许我不会成为天才。
+
+"Maybe I won't shock the world with my brilliance,
+“也许我不会用我的才华震惊世界，
+
+"but at least I don't want them to see my trail
+”但至少我不想让他们看到我
+
+"of failures and mistakes,
+“失败和错误的踪迹，
+
+and I'm gonna cover my tracks," right?
+我会掩盖我的踪迹”，对吗？
+
+Fitzpatrick: Well, they want to be seen as being clever, right?
+菲茨帕特里克：嗯，他们希望被视为聪明，对吧？
+
+Collins-Sussman: Clever people don't make mistakes.
+Collins-Sussman：聪明的人不会犯错误。
+
+Fitzpatrick: Right, exactly.
+菲茨帕特里克：对，完全正确。
+
+So the result is people wind up working in a cave.
+所以结果是人们最终在山洞里工作。
+
+A classic example of this is,
+一个典型的例子是，在问路之前
+
+how long will you drive around before asking for directions?
+你会开车多长时间？
+
+Okay?
+好的？ 在问路之前
+
+How long are you gonna be completely lost
+你会完全迷路多久
+
+before asking for directions, you know?
+，你知道吗？
+
+I mean, you're not gonna say, "Oh, I'm lost.
+我的意思是，你不会说：“哦，我迷路了。
+
+I'm immediately gonna ask for directions."
+我要立即问路。”
+
+Collins-Sussman: Well, it's hard to admit
+Collins-Sussman：嗯，有时候很难承认
+
+that you've made mistakes sometimes,
+自己犯了错误，
+
+especially publicly, right?
+尤其是在公开场合，对吧？
+
+So that's why we showed these quotes in the beginning
+所以这就是为什么我们一开始就展示了这些引言，
+
+with people saying, you know, "Can you erase my history?
+人们说，你知道，“你能抹掉我的历史吗？
+
+Can you hide my project until it's perfect?"
+你能隐藏我的项目直到它完美吗？”
+
+Right? I mean, it's more of this,
+正确的？ 我的意思是，更重要的是，
+
+"I don't want to show everybody what I'm doing
+“我不想向所有人展示我在做什么，
+
+till I think it's perfect."
+直到我认为它很完美。”
+
+Fitzpatrick: Right. So you may be thinking, "Well, big deal."
+菲茨帕特里克：对。 所以你可能会想，“好吧，有什么大不了的。”
+
+Collins-Sussman: Why do we care?
+柯林斯-萨斯曼：我们为什么关心？
+
+Fitzpatrick: Why is this a problem?
+菲茨帕特里克：为什么这是一个问题？
+
+Why should I care about this?
+我为什么要关心这个？
+
+The primary reason is it inhibits progress
+主要原因是它阻碍了进步，
+
+and not just personal progress, but project progress, okay?
+不仅仅是个人进步，还有项目进步，好吗？
+
+It's sort of the "many eyes make all bugs shallow" quote.
+这有点像“众目睽睽之下，一切错误都浅薄”的说法。
+
+But if everyone's off working in a cave
+但是，如果每个人都在山洞里工作，
+
+and just occasionally throwing code out to the project,
+只是偶尔将代码扔到项目中，那么
+
+code quality remains low,
+代码质量仍然很低，
+
+and your bus factor remains low.
+并且您的总线系数仍然很低。
+
+How many people here have ever heard of the bus factor?
+这里有多少人听说过巴士因素？
+
+Collins-Sussman: We talk about it every year.
+Collins-Sussman：我们每年都会讨论这个问题。
+
+Fitzpatrick: Weren't you here last year?
+菲茨帕特里克：你去年没来过这里吗？
+
+No, okay.
+不，好吧。
+
+Bus factor is the number of people
+巴士系数是指
+
+on your software project
+您的软件项目中
+
+that have to get hit by a bus
+必须被巴士撞到的人数，
+
+that are gonna leave you in a world of hell, okay?
+这会让您陷入地狱世界，好吗？
+
+All right? So if there's only one person
+好的？因此，如果只有一个人
+
+that knows that really obscure file-system code
+知道真正晦涩的文件系统代码，
+
+and they get hit by a bus,
+并且他们被一辆公共汽车撞了，
+
+whether that bus comes in the form of an actual bus,
+无论那辆公共汽车以实际公共汽车的形式出现，
+
+or they get married,
+还是他们结婚了，
+
+or they have a kid, or they change jobs,
+或者他们有了孩子，或者他们换了工作 ，
+
+or they move away, or they get bored...
+或者他们搬走，或者他们感到无聊......
+
+Collins-Sussman: It happens all the time.
+Collins-Sussman：这种事经常发生。
+
+So this is one of the things
+因此，这是
+
+we talk about all the time in teams,
+我们在团队中一直讨论的事情之一，
+
+whether it's a team at work or a team on an Open Source,
+无论是工作团队还是开源团队，
+
+is to not get so territorial that you have low bus factor
+都是不要变得太地域性以至于
+
+on different components, right?
+在不同组件上的总线系数较低，对吧？
+
+It's a common thing, right?
+这是很常见的事情，对吧？
+
+You know, you can't touch that code.
+你知道，你不能碰那个代码。
+
+It belongs to Joe.
+它属于乔。
+
+Well, wait a second, you know.
+好吧，等一下，你知道。
+
+What happens if Joe's gone, right?
+如果乔走了怎么办，对吗？
+
+Now you're in trouble.
+现在你有麻烦了。
+
+So one of the things you should be watching out for
+因此，您应该注意的事情之一
+
+is you should have as many people touching
+是您应该让尽可能多的人接触
+
+and getting familiar
+并熟悉
+
+with as many parts of the code as possible.
+尽可能多的代码部分。
+
+You want that redundancy on your team.
+你希望你的团队有这种冗余。
+
+But if you're off working in a cave
+但如果你在山洞里工作
+
+and you're hiding your tracks,
+并且隐藏了你的踪迹，
+
+well, no one knows what you're doing.
+那么没有人知道你在做什么。
+
+Fitzpatrick: You could be working
+Fitzpatrick：
+
+on the wrong thing entirely, actually,
+实际上，
+
+if you're off doing some really big feature
+如果你不做一些非常大的功能
+
+or big piece of code.
+或大段代码，你可能会完全做错事情。
+
+Collins-Sussman: Well, here's a nice analogy
+Collins-Sussman：嗯，这是我们喜欢谈论的一个很好的类比
+
+that we like to talk about, which is, you know,
+，你知道，
+
+think about the way you interact with your compiler, right?
+想想你与编译器交互的方式，对吗？
+
+You have a really tight feedback, right?
+您的反馈非常严格，对吧？
+
+You write a function, you compile it,
+你编写一个函数，编译它，
+
+make sure it at least compiles, right?
+确保它至少可以编译，对吗？ 如果你做得很好，
+
+Maybe you write a UniTest if you're doing great, right?
+也许你会写一个 UniTest，对吗？
+
+But nobody sits down and writes,
+但是没有人坐下来编写
+
+you know, thousands and thousands of lines of code
+成千上万行代码，
+
+and then runs their compiler for the first time.
+然后第一次运行他们的编译器。
+
+It just doesn't happen.
+它就是不会发生。
+
+Fitzpatrick: Not anymore. Collins-Sussman: [laughs]
+菲茨帕特里克：不再是了。Collins-Sussman：[笑]
+
+Fitzpatrick: Maybe 50 years ago, right?
+Fitzpatrick：也许 50 年前，对吧？
+
+Collins-Sussman: Right. In the mainframe days maybe.
+柯林斯-萨斯曼： 是的。也许在大型机时代。
+
+So, you know, it's the same way--
+所以，你知道，这是同样的方式——
+
+if you're working on programming in any way,
+如果你正在以任何方式进行编程，
+
+you should not be doing it all in a cave
+你不应该在一个山洞里完成这一切，
+
+and then sort of waiting to spring it and see what happens.
+然后等待它的启动，看看会发生什么。
+
+You want other people seeing what you're doing
+您希望其他人看到您正在做的事情，
+
+as soon as it makes sense, right?
+只要它有意义，对吗？
+
+We'll talk about what that is.
+我们将讨论那是什么。
+
+Fitzpatrick: Right. But I mean, in addition,
+菲茨帕特里克：对。但我的意思是，此外，
+
+if you're off in the cave, you don't learn as quickly.
+如果你在山洞里，你就不会学得那么快。
+
+It's harder for you to improve your skills, right?
+提高自己的技能对你来说更难了，对吗？ 在
+
+There's a balance between spinning your wheels
+旋转轮子
+
+and being lost
+和迷失方向
+
+and asking the person next to you
+以及询问你旁边的人之间
+
+every question that comes into your head, right?
+出现的每个问题之间有一个平衡，对吗？
+
+But I mean, this problem isn't unique to computer science.
+但我的意思是，这个问题并不是计算机科学所独有的。
+
+It pervades all sciences, you know, math, anthropology,
+它遍及所有科学，你知道，数学、人类学，
+
+especially when you get into hard research,
+尤其是当你进行艰苦的研究时，
+
+you know, you see this sort of thing.
+你知道，你会看到这种事情。
+
+Collins-Sussman: Well, I think if any folks
+Collins-Sussman：嗯，我认为如果有人
+
+are in the academic world,
+在学术界，
+
+and computer science is part of this,
+而计算机科学是其中的一部分，
+
+there's this constant tension probably caused
+那么这种持续的紧张可能是
+
+by the "publish or perish" philosophy, right?
+由“出版或灭亡”哲学引起的，对吗？
+
+Where, gee, you're all supposed to be in academia.
+天哪，你们都应该在学术界。
+
+You're supposed to be sharing knowledge
+你应该分享知识
+
+and collaborating and helping each other
+、合作、互相帮助，共同
+
+and cooperatively advancing the state of the art,
+推进最先进的技术，
+
+but everybody has to hold their research to their chest
+但每个人都必须把自己的研究放在心上，在发表之前
+
+and not show anybody what they're doing
+不要向任何人展示他们在做什么，
+
+until they're published, right?
+对吗？ 会
+
+And what happens?
+发生什么？
+
+Oh, you end up publishing a paper
+哦，你最终发表的论文
+
+which is redundant with somebody else's paper, right?
+与别人的论文是多余的，对吧？
+
+Or maybe you worked on the wrong thing and didn't realize it
+或者也许你做了错误的事情并且没有意识到这一点，
+
+'cause you never told anybody what you were doing.
+因为你从未告诉任何人你在做什么。
+
+Or maybe if you had collaborated with this other person,
+或者，如果您与其他人合作，也许
+
+you guys could've written a better paper together, right?
+你们可以一起写出更好的论文，对吗？
+
+Same exact tension, just in writing software, right?
+同样的压力，只是在编写软件时，对吧？
+
+The sooner you get your idea out and other people looking at it,
+你越早提出你的想法并让其他人看到它，
+
+you can find out, "Am I working on the right thing?
+你就能发现，“我正在做正确的事情吗？
+
+"Do I have the right idea?
+”我有正确的想法吗？
+
+"Should I go back to the drawing board?
+“我应该回到绘图板吗？
+
+"Should I be collaborating with this person
+“我应该与这个人合作
+
+'cause they're working on it too?"
+，因为他们也在研究这个问题吗？”
+
+I mean, it's the same issue.
+我的意思是，这是同一个问题。
+
+Fitzpatrick: Right. So a little bit of more bad news
+菲茨帕特里克：是的。所以还有一点坏消息
+
+to this for you, okay?
+要告诉大家。 这是给你的，好吗？
+
+Is that you're not a one-of-a-kind, right?
+你不是独一无二的，对吧？
+
+Okay?
+好吧？
+
+The, uh...
+呃……
+
+If you're one-in-a-million, right?
+如果你是百万分之一，对吗？
+
+That means there's over a thousand people just like you
+这意味着有超过 现在有上千人和你一样
+
+out there right now, okay? Collins-Sussman: It's true.
+，好吗？Collins-Sussman：确实如此。
+
+[laughs]
+[笑]
+
+Fitzpatrick: Glad you guys liked that. Thanks.
+Fitzpatrick：很高兴你们喜欢这个。谢谢。
+
+But even if you're a genius,
+但即使你是天才，
+
+working well with others may make or break you, okay?
+与他人良好合作可能会成就或毁掉你 好吧？
+
+Like attracts like.
+物以类聚。
+
+And we work hard to hire really smart people at Google.
+我们在 Google 努力聘请真正聪明的人。
+
+And I don't care how smart you are.
+我不在乎你有多聪明。
+
+If you can't sit there and communicate with someone else
+如果你不能坐在那里与其他人交流
+
+or work together in a team and achieve consensus,
+或在团队中一起工作并实现目标
+
+you're not gonna be successful working on a team of people.
+
+
+Collins-Sussman: This is one of those things
+Collins-Sussman：这是
+
+that I always try to communicate,
+我一直试图传达的事情之一，
+
+especially to students
+特别是对于
+
+who are just starting out in computer science
+刚刚开始学习计算机科学的学生来说，
+
+is that software,
+软件是这样的，
+
+even though it's fun to write code alone,
+尽管
+
+you know, late at night in your basement, whatever,
+你知道，深夜在地下室独自编写代码是很有趣的，无论如何，
+
+actually writing software that's successful--
+实际上编写成功的软件 -
+
+it's an inherently collaborative activity.
+这是一种本质上的协作活动。
+
+And it actually forces you to deal with people
+它实际上迫使你与人打交道并与
+
+and talk with people, and that's why we encourage people
+人交谈，这就是为什么我们鼓励人们
+
+to get involved in Open Source, because it's sort of like,
+参与开源，因为这有点像，
+
+"Okay, well, maybe you're still in college,
+“好吧，好吧，也许你还在上大学，
+
+but here's your chance to actually work with people
+但这是你的机会真正与人们一起工作，
+
+and work on a team and see what it's gonna be like.
+在一个团队中工作，看看会是什么样子。
+
+I mean, one of the things I always ask people is,
+我的意思是，我总是问人们的一件事是，
+
+"Can you name a piece of software
+“你能说出一款软件的名字吗
+
+"that's really successful,
+？”它非常成功，
+
+"really widely used by a lot of people,
+“被广泛使用”很多人，
+
+and was written by one person?"
+而且是一个人写的？”
+
+Fitzpatrick: And before anybody yells out Metafont,
+Fitzpatrick：在有人喊出 Metafont 之前，
+
+that's not widely used, okay?
+它并没有被广泛使用，好吗？
+
+But anyway, so this is a trap, okay?
+但无论如何，所以这是一个陷阱，好吗？
+
+Of this sort of wanting to be a genius.
+关于这种想成为天才的想法。
+
+So how do we avoid this, okay?
+所以 我们如何避免这种情况，好吗？
+
+Quite frankly, the first step is to drop the ego, okay?
+坦率地说，第一步是放弃自我，好吗？
+
+Instead of having a large personal ego,
+与其拥有巨大的个人自我，
+
+which actually impedes collaborating on a project,
+这实际上会阻碍项目的合作，不如
+
+have a strong collective ego around your project
+在你的项目
+
+or the piece of software you're working on.
+或项目中拥有强大的集体自我您正在开发的软件。开源世界中的
+
+A great example in the Open Source world
+一个很好的例子
+
+is the Apache Software Foundation, okay?
+是 Apache软件基金会，好吗？
+
+Community is the essence of every project
+社区是
+
+in the Apache Software Foundation.
+Apache软件基金会每个项目的本质。
+
+That's what's most important to them, more so than code.
+这对他们来说是最重要的，比代码更重要。
+
+Companies call Apache up all the time and say,
+公司总是给 Apache 打电话说：
+
+"Hey, we want to give you guys a billion lines of code.
+“嘿，我们想给你们提供10 亿行代码。
+
+Blah, blah, blah."
+废话，废话，废话。”
+
+Collins-Sussman: And then walk away.
+Collins-Sussman：然后走开。
+
+Fitzpatrick: And then, yeah, "Have a nice day."
+菲茨帕特里克：然后，是的，“祝你有美好的一天。”
+
+And they're like, "We don't want it.
+他们就像是，“我们不想要它。”
+
+"We don't want a pile of code by itself
+我们不想要一堆代码本身
+
+"that it's just gonna bit rot.
+“它只会腐烂。
+
+We want to build a community around this."
+我们想围绕它建立一个社区。”
+
+And so, as a result, people working on the projects
+因此，从事这些项目的人们
+
+tend to be proud of--I mean, I don't know about you guys,
+往往会感到自豪——我的意思是，我不了解你们，
+
+but I want to be proud of the stuff that I'm working on.
+但我想为我正在从事的工作感到自豪。
+
+Collins-Sussman: Absolutely.
+柯林斯-萨斯曼：当然。
+
+It's a good way to keep your project healthy too.
+这也是保持项目健康的好方法。
+
+Fitzpatrick: So you don't want to be this guy.
+Fitzpatrick：所以你不想成为这个人。
+
+Collins-Sussman: Not on your project.
+Collins-Sussman：不在你的项目中。
+
+Next thing to think about
+接下来要考虑的
+
+is how you interact with people.
+是你如何与人互动。
+
+How do you give each other feedback?
+你们如何给彼此反馈？
+
+And it involves, you know, actually being a nice person.
+你知道，这涉及到真正成为一个好人。
+
+Fitzpatrick: What? Collins-Sussman: I know.
+菲茨帕特里克：什么？柯林斯-萨斯曼：我知道。
+
+It's crazy.
+这很疯狂。
+
+But it is--actually, it is a learned skill
+但实际上，提出建设性批评是一项习得的技能
+
+to give constructive criticism,
+，
+
+whether it be a code review or just a design,
+无论是代码审查还是只是设计、
+
+discussion of design.
+设计讨论。
+
+And to take criticism as well.
+并接受批评。
+
+If you work in Open Source, you learn to be pretty thick-skinned
+如果你在开源领域工作，你就会学会变得厚脸皮，
+
+so that you can take nonconstructive criticism
+这样你就可以接受非建设性的批评
+
+along with the constructive criticism,
+和建设性的批评，
+
+but it's something that we should all aspire to do, right?
+但这是我们都应该渴望做的事情，对吗？
+
+Is how to do it in a nice way.
+就是如何以一种好的方式去做。
+
+Fitzpatrick: Right. The way to look at it is that
+菲茨帕特里克：对。看待它的方式是
+
+your code isn't part of you, right?
+你的代码不是你的一部分，对吧？
+
+You want to work for the best piece of software as a whole,
+你想要为整个软件中最好的部分而工作，而
+
+not to sort of get your one little clever bit in.
+不是为了发挥你的一点聪明才智。
+
+Here's an anecdote.
+这是一个轶事。
+
+A friend of mine left Apple a few years ago,
+我的一个朋友几年前离开了苹果公司，
+
+went to work at a smaller company
+去了一家较小的公司工作了
+
+that had been around for a while as an engineering manager.
+一段时间，担任工程经理。
+
+And he went in and saw that they were using Version Control,
+他进去看到他们正在使用版本控制，
+
+and he set up so it would send out code-review emails,
+他进行了设置，以便发送代码审查电子邮件，
+
+'cause they weren't sending out code-review emails.
+因为他们没有发送代码审查电子邮件。
+
+And he started doing code reviews.
+他开始进行代码审查。
+
+And, you know, he thought,
+而且，你知道，他想，
+
+"Okay, you know, I'm gonna try and get these guys
+“好吧，你知道，我要尝试让这些人
+
+"a little, you know, more rigorous engineering.
+”进行更严格的工程设计。
+
+We'll have some better practices here."
+我们在这里会有一些更好的做法。”
+
+And a week and a half later,
+一周半后，
+
+the director of engineering calls him in and says,
+工程总监把他叫进来，说：
+
+"You know, I'm getting a lot of feedback
+“你知道，我收到了很多反馈
+
+"that you're really bringing people down
+”，“你真的让人们失望
+
+with all this negative criticism of everybody."
+了”。 所有这些对每个人的负面批评。”
+
+He's like, "What are you talking about?"
+他就像是，“你在说什么？”
+
+"Yeah, these code-review things you're doing,
+“是的，你正在做的这些代码审查事情，
+
+you know, people are getting really upset by that."
+你知道，人们对此感到非常不安。”
+
+And, you know, how do you respond to that?
+而且，你知道，你对此有何反应？ 我认为，
+
+This is something that is really integral, I think,
+这是
+
+to writing good software.
+编写优秀软件不可或缺的一部分。
+
+Collins-Sussman: That's a cultural problem, too,
+Collins-Sussman：对于某些公司来说，这也是一个文化问题
+
+in some companies, right?
+，对吧？
+
+Some people really--
+有些人真的——
+
+Especially in a lot of corporations,
+尤其是在很多公司里，
+
+you'll see not only territorial--
+你不仅会看到领土——
+
+You know, "This is my code. You can't touch it."
+你知道，“这是我的代码。你不能碰它。”
+
+But also, "How dare you tell me what to write
+而且，“你怎么敢告诉我要写什么
+
+"or make comments on what I just wrote?
+”或对我刚刚写的内容发表评论？
+
+Mind your own business."
+管好你自己的事吧。”
+
+I mean, that is a very common behavior,
+我的意思是，这是一种非常常见的行为，
+
+and it's hard to get companies to break out of that cycle,
+很难让公司打破这个循环，
+
+increase the bus factor,
+增加总线系数，
+
+do code review all the time.
+一直进行代码审查。
+
+At Google, we actually--
+在谷歌，我们实际上——
+
+We're not allow to submit code
+我们” 在进行代码审查之前，不允许将代码提交
+
+into our Version Control system until there's code review.
+到我们的版本控制系统中。
+
+Like, it will reject your change
+就像，它会拒绝您的更改，
+
+until there's proof that some peer
+直到有证据表明某些同行
+
+has looked at what you've done and given it a thumbs-up,
+已经查看了您所做的事情并竖起了大拇指，
+
+which is a great thing.
+这是一件很棒的事情
+
+Fitzpatrick: Right. So criticism is actually good.
+菲茨帕特里克：是的。所以批评实际上是好的。
+
+And the next important thing is that you have to learn
+下一个重要的事情是你必须学会
+
+to sort of embrace failure, okay?
+接受失败，好吗？
+
+People, I mean-- I'm afraid of failing.
+人们，我的意思是——我害怕失败。
+
+Certainly, I think most people are, okay?
+当然，我认为大多数人都害怕失败。 好吧？
+
+But, you know, the whole NASA "failure is not an option" thing
+但是，你知道，整个 NASA 的“失败不是一种选择”的说法
+
+is a load of crud, right?
+都是一堆废话，对吧？
+
+Failure is an option, except in one case.
+失败是一种选择，除了一种情况。
+
+It's failing on the same thing repeatedly.
+它在同一件事上反复失败。
+
+That's never good, because you're not learning, right?
+这从来都不是好事，因为你没有学习，对吧？
+
+Collins-Sussman: And it's embarrassing.
+柯林斯-萨斯曼：这很尴尬。菲茨
+
+Fitzpatrick: Well, it's embarrassing,
+帕特里克：嗯，这很尴尬，
+
+but if you're failing-- You try something and fail.
+但如果你失败了——你尝试了一些东西，然后失败了。
+
+Try something different and fail,
+尝试不同的东西但失败了，
+
+and you try something different.
+你就尝试不同的东西。
+
+Every time you fail, you learn something.
+每次失败，你都会学到一些东西。
+
+And for many people, that's the best way
+对于许多人来说，这是
+
+that they learn how to do things.
+他们学习如何做事的最佳方式。
+
+Some people learn by sitting in a room
+有些人通过坐在房间里
+
+and hearing two other guys yammer on forever.
+听另外两个人喋喋不休地喋喋不休来学习。
+
+Some people learn by reading a book.
+有些人通过读书来学习。
+
+And some people learn by looking at pictures.
+有些人通过看图片来学习。
+
+Some people learn by trying and failing.
+有些人通过尝试和失败来学习。
+
+Collins-Sussman: Well, this is also important--
+柯林斯-萨斯曼：嗯，这也很重要——
+
+I mean, it's another cultural issue here,
+我的意思是，这是另一个文化问题，
+
+is when failure does happen, be ready for it.
+就是当失败确实发生时，要做好准备。
+
+Don't freak out.
+别惊慌。
+
+Document what happened, what did you learn from it.
+记录发生了什么，你从中学到了什么。 下次
+
+What are you gonna do different next time, right?
+你会采取什么不同的做法，对吗？
+
+That's why we do postmortems on--
+这就是为什么我们要进行事后分析——
+
+you know, when something crashes,
+你知道，当某些事情崩溃时，
+
+or there's some-- some bad thing happens.
+或者有一些——一些糟糕的事情发生时。
+
+We write it up and learn from it.
+我们把它写下来并从中学习。
+
+Fitzpatrick: Right. And the point is not to assign blame.
+菲茨帕特里克：对。重点不是指责。
+
+It's to look at what you did,
+就是要看看你做了什么，
+
+have everyone else look at what happened
+让其他人看看发生了什么，
+
+so that we don't do this again.
+这样我们就不会再这样做了。
+
+Collins-Sussman: I think a big issue also around failure
+柯林斯-萨斯曼：我认为失败的一个大问题
+
+is just natural human fear.
+就是人类自然的恐惧。
+
+I have a--You know, I can relate to this personally.
+我有一个——你知道，我个人对此有感触。 几年前
+
+I started learning banjo a few years ago,
+我开始学习班卓琴，
+
+playing in bluegrass jams.
+在蓝草即兴演奏中演奏。
+
+And, you know, they would occasionally try to call on me
+而且，你知道，他们偶尔会尝试邀请我
+
+to do banjo solos, right?
+演奏班卓琴独奏，对吗？
+
+Which is really, really hard to learn,
+这真的非常非常难学，
+
+and I just wouldn't do it, or I--you know, bow out.
+我就是不会这样做，或者我——你知道，退出。
+
+And someone took me aside, and he said, you know,
+有人把我拉到一边，他说，“你知道，学习独奏的
+
+"You realize that 50% of learning to solo
+50%
+
+"is just not caring how good you sound
+”就是不关心你的声音有多好
+
+and just losing the fear."
+，只是失去恐惧。”
+
+It was totally true.
+这是完全正确的。
+
+I was like, "All right, these are my friends.
+我当时想，“所有 没错，这些是我的朋友。
+
+If I sound terrible, who cares?"
+如果我听起来很糟糕，谁在乎呢？”
+
+And sure enough, I mean, he was absolutely right.
+果然，我的意思是，他绝对是对​​的。
+
+I just started playing really bad solos,
+我刚开始演奏非常糟糕的独奏，
+
+but it got better and better, and I kept learning,
+但它变得越来越好，我不断学习，
+
+and that was a huge step.
+这是一个巨大的进步。
+
+So I mean, if you can just make that mental shift
+所以我 意思是，如果你能做出心理转变
+
+and say, "It's all right.
+并说：“没关系。
+
+I'm gonna fail, and it's not a big deal."
+我会失败，但这不是什么大事。”
+
+No fear. That's fine.
+不用担心。没关系。
+
+You move on. You learn.
+你继续前进。你学习。实际上，
+
+You've got a better anecdote, actually.
+你有一个更好的轶事。
+
+Fitzpatrick: Well, this is a complete anecdote.
+菲茨帕特里克：嗯，这是一个完整的轶事。
+
+It's a story about the executive
+这是一个故事 关于一位高管
+
+who makes a bad business decision,
+做出了错误的商业决策，导致
+
+and the company loses $10 million for the company.
+公司损失了1000 万美元。
+
+The next morning, comes into work.
+第二天早上，他来上班。
+
+His secretary says, you know,
+他的秘书说，你知道，
+
+"The CEO wants to see you in his office."
+“首席执行官想在他的办公室见到你。”
+
+And the guy hangs his head down.
+低下头。
+
+He's like, "This is it. I'm gonna get fired," you know?
+他说：“就是这样了。”我会被解雇，”你知道吗？
+
+Walks into the CEO's office, and he's like,
+走进首席执行官办公室，他说，“
+
+"So I guess you want my resignation."
+所以我猜你想要我辞职。”
+
+The CEO looks at him and says, "Resignation?
+首席执行官看着他说，“辞职？
+
+"I just spent $10 million training you.
+“我刚刚花了1000万美元培训你。
+
+Why would I fire you?"
+我为什么要解雇你？”
+
+[laughter]
+[笑声]
+
+But again, I mean,
+但是，我的意思是，
+
+I bet you that's a mistake that guy never will make again.
+我敢打赌，那家伙永远不会再犯这个错误。
+
+I lived in Italy for three years, okay?
+我在意大利住了三年，好吗？
+
+I moved there, and I had been studying Italian,
+我搬到那里，一直在学习意大利语，
+
+and I was really proud to use my Italian.
+我很自豪能够使用我的意大利语。
+
+I went into a cafe, and I ordered a sandwich,
+我走进一家咖啡馆，点了一份三明治，
+
+and they give me this massive sandwich,
+他们给了我这个巨大的三明治，
+
+and I wanted a knife to cut it with.
+我想要一把刀来切它。
+
+So I thought I'd be cool and use my Italian,
+所以我想我会很酷并使用我的意大利语，
+
+and I promptly asked them for a toothbrush to cut my sandwich.
+我立即向他们要了一把牙刷来切我的三明治。
+
+[laughter] The guy just looked at me.
+[笑声]那家伙只是看着我。
+
+And I'm like, "Toothbrush." And he's like, "No."
+我就像，“牙刷。”他说：“不。”
+
+Collins-Sussman: That's true.
+柯林斯-萨斯曼：确实如此。
+
+Fitzpatrick: But never made that mistake again.
+Fitzpatrick：但我再也没有犯过同样的错误。
+
+Collins-Sussman: Speaking languages
+Collins-Sussman：在外国说语言
+
+in a foreign country is very intimidating.
+是非常令人生畏的。
+
+I mean, you're just so scared of looking like a fool,
+我的意思是，你只是非常害怕看起来像个傻瓜，
+
+but you don't learn otherwise.
+但除此之外你也学不到什么。
+
+Fitzpatrick: Well, it's the easiest way to learn, I think.
+Fitzpatrick：嗯，我认为这是最简单的学习方法。
+
+That sort of hot-white fear you get going up your neck
+那种炽热的恐惧感会升到你的脖子上，
+
+'cause you asked for something embarrassing.
+因为你要求做一些令人尴尬的事情。
+
+Collins-Sussman: So failing is--
+Collins-Sussman：所以失败是——
+
+It's not just about embracing failure,
+这不仅仅是拥抱失败，
+
+but it's also failing fast, right?
+而且是快速失败，对吧？
+
+We're talking about iterating as quickly as we can.
+我们正在谈论尽可能快地迭代。
+
+This is something we actually talk about a lot at Google,
+这是我们在谷歌经常谈论的事情，
+
+was don't just fail, fail quickly
+就是不要只是失败，要快速失败，然后
+
+and pick up and try something different as fast as you can.
+尽快尝试不同的东西。
+
+And that's why we've got sort of, like--
+这就是为什么我们现在
+
+We got this Google Labs site now, right?
+有了这个 Google 实验室网站，对吗？
+
+Where are people are experimenting
+人们在哪里尝试
+
+with different projects.
+不同的项目？
+
+And if they fail, that's fine.
+如果他们失败了，那也没关系。
+
+They'll just put something up
+他们只会在第二天添加一些内容
+
+or change it the next day and try it again, right?
+或更改它，然后再试一次，对吗？
+
+The faster you can fail and the faster you can iterate,
+你失败的速度越快，迭代的速度越快，
+
+the faster you will learn and get better.
+你学习和变得更好的速度就越快。
+
+Fitzpatrick: And you don't have to hide it if you fail.
+Fitzpatrick：如果你失败了，你也不必隐藏它。
+
+It's okay, you know. You don't have to hide your tracks.
+没关系，你知道。 你不必隐藏你的踪迹。
+
+We talk about, you know, in a Version Control world,
+我们谈论的是，在版本控制世界中，
+
+you know, people use Subversion versus Mercurial
+人们使用Subversion、Mercurial
+
+versus Git, et cetera.
+和 Git，等等。
+
+Git Rebase is something
+
+
+that people use often to sort of hide their tracks.
+人们经常使用 Git Rebase来隐藏自己的踪迹。
+
+There are some legitimate uses, I think,
+我认为，
+
+if you want to clean things up a bit.
+如果你想清理一下东西，有一些合法的用途。
+
+Collins-Sussman: Or maintain a vendor branch.
+Collins-Sussman：或者维护一个供应商分支。
+
+Fitzpatrick: Maintain a vendor branch, et cetera.
+Fitzpatrick：维护供应商分支等等。
+
+But people are typically looking to say,
+但人们通常会说，
+
+"Oh, you know, I was working on all this stuff.
+“哦，你知道，我正在做所有这些事情。
+
+"I made all these sort of false starts
+”我做了所有这些错误的开始
+
+"I don't want anybody else to see,
+“我不想让其他人看到，
+
+"you know, my stupid mistake here,
+”你知道，我在这里犯了愚蠢的错误 ，
+
+where I forgot to check the type of something."
+我忘了检查某物的类型。”
+
+Collins-Sussman: Rewrite my history so it's perfect.
+柯林斯-萨斯曼：重写我的历史，使其完美。菲茨
+
+Fitzpatrick: That's right. Yes, exactly.
+帕特里克：没错。是的，完全一样。
+
+Just like the history of the world.
+就像世界历史一样。
+
+But what it comes down to is--
+但归根结底是——
+
+One of the ways of making this problem better
+一 解决这个问题的方法之一
+
+is to practice, okay?
+就是练习，好吗？
+
+If you practice,
+如果你练习，
+
+it makes your iteration-failure cycle faster, okay?
+它会让你的迭代失败周期更快，好吗？
+
+And it basically--
+基本上，失败
+
+it's sort of less scary to fail,
+就不那么可怕了，
+
+because you'll tend to have smaller failures.
+因为你往往会拥有更小的
+
+Collins-Sussman: This way, the failures
+Collins-Sussman：这样，
+
+tend to get smaller over time,
+随着时间的推移，失败往往会变得更小，
+
+and the successes tend to get larger,
+而成功往往会变得更大，
+
+and that's a trend you'll see,
+这是你会看到的趋势，
+
+especially if you're learning as you fail fast.
+特别是如果你在快速失败的过程中学习
+
+Fitzpatrick: Right.
+。Fitzpatrick：对。
+
+And the next thing is sort of to be a small fish, all right?
+接下来就是成为一条小鱼，好吗？
+
+If you were the senior developer
+如果你是
+
+on a team or in a company or something
+团队或公司或其他机构的高级开发人员，
+
+and everyone looks to you and you're sort of the teacher
+每个人都仰望你，那么你就像老师
+
+or the king/queen bee, whatever,
+或王/蜂王无论如何，
+
+if you're only working with people junior to you,
+如果你只和比你资历浅的人一起工作，
+
+you are gonna learn things from them,
+你会从他们身上学到东西，
+
+but it's gonna be harder to improve your skills
+但提高你的技能会
+
+than it would be if you were working with someone else
+比和比你更聪明的人一起工作更难，
+
+who is smarter than you, who is a better engineer than you.
+他们比你更聪明。 是一个比你更好的工程师。
+
+Collins-Sussman: Actually, you know,
+Collins-Sussman：实际上，
+
+in my experience, when you're a big fish in a pond,
+根据我的经验，当你是池塘里的一条大鱼时，
+
+it's very comfortable,
+会很舒服，
+
+but you're not really learning very much, right?
+但你并没有真正学到很多东西，对吧？
+
+You feel safe, but you don't get much better.
+你感到安全，但并没有好转多少。
+
+And when you are a small fish in a huge pond,
+当你是一个大池塘里的一条小鱼时，
+
+it's very scary, right?
+那是非常可怕的，对吧？
+
+Fitzpatrick: Sometimes you get eaten, though.
+Fitzpatrick：不过有时你会被吃掉。
+
+Just kidding.
+只是在开玩笑。
+
+Collins-Sussman: That's what it was like
+Collins-Sussman：这就是
+
+when we started at Google, right?
+我们刚加入Google 时的情况，对吧？
+
+It was very like, "Aah!"
+非常像“啊！”
+
+You know, it's just so many people.
+你知道，只有这么多人。
+
+But you get better really quickly, right?
+但你很快就会好起来，对吧？
+
+Again, it's all about the reward of facing that fear.
+再说一遍，这都是关于面对恐惧的回报。
+
+Fitzpatrick: It's like the old Emacs joke, you know?
+Fitzpatrick：这就像Emacs 的老笑话，你知道吗？
+
+It's got a really steep learning curve,
+它的学习曲线非常陡峭，
+
+but that just means you learn a whole lot
+但这意味着你在短时间内学到了很多东西
+
+in a short period of time, right?
+，对吗？
+
+But beyond being a small fish, the other thing is to sort of--
+但除了成为一条小鱼之外，另一件事是——
+
+And this has to do with not only being successful,
+这不仅与成功有关，
+
+but also being a leader, which is to be influenced, okay?
+而且与成为领导者有关，这是要受到影响的，好吗？
+
+'Cause the more that you're open to the influence of other people
+因为你越愿意接受其他人的影响，
+
+who might have a really good idea
+他们可能有一个真正的好主意
+
+or a novel way of looking at something
+或看待某事
+
+or accomplishing something--
+或完成某事的新颖方式——你对他人的
+
+The more actual influence that you bank and have on others,
+实际影响力越大，你
+
+the more likely they are to listen to you.
+就越有可能他们要听你的。
+
+Collins-Sussman: Or it's respect is a two-way street, right?
+Collins-Sussman：或者说尊重是双向的，对吧？
+
+I would say it's not just about respect being a two-way street.
+我想说，这不仅仅是双向的尊重。
+
+It's about vulnerability,
+这是关于脆弱性的，
+
+in that if you can show yourself
+因为如果你能够表现出自己对
+
+to be open to change and willing to admit mistake--
+改变持开放态度并愿意承认错误——
+
+I guess being vulnerable
+我想脆弱
+
+is another form of being influenced, right?
+是受到影响的另一种形式，对吗？
+
+It's an extreme case.
+这是一个极端的例子。
+
+If you can admit your mistakes in front of your peers
+如果你能在同事面前承认自己的错误，
+
+and say, you know, "I was wrong. I made the wrong choice.
+并说：“我错了。我做了错误的选择。
+
+I had the wrong opinion."
+我有错误的观点。”
+
+A lot of people are afraid to admit that,
+很多人不敢承认这一点，
+
+'cause they're afraid, you know, in the short term,
+因为他们害怕，你知道，在短期内，
+
+it's gonna make them look weak
+这会让他们看起来很软弱，
+
+or like they don't know what they're doing.
+或者好像他们不知道自己在做什么。
+
+But in fact, you know, if you think about people
+但事实上，你知道，如果你想想那些
+
+that you really admire, you may have worked with,
+你真正钦佩的人，或者你可能曾经共事过的人，
+
+they make themselves vulnerable a lot.
+他们会让自己变得很脆弱。
+
+And over the long term, they get perceived
+从长远来看，他们会被视为
+
+as big figures, big strength figures, right?
+大人物、大力量人物，对吗？
+
+Wow, that person is so strong
+哇，那个人太坚强了，
+
+that they're not afraid to admit mistakes and failures.
+不怕承认错误和失败。
+
+Fitzpatrick: Oh, and it's not just about their ideas
+菲茨帕特里克：哦，这不仅仅是他们的想法
+
+or their way of doing things.
+或做事方式。
+
+It's a way also to sort of cement people's dedication
+这也是一种巩固人们
+
+to what your project is or what you're doing,
+对你的项目或你正在做的事情的奉献精神的方式，
+
+'cause, you know, we like to talk about buses a lot, I guess,
+因为，你知道，我想我们经常谈论公共汽车，
+
+but it's the difference between being the person driving a bus
+但这就是驾驶公共汽车的人和驾驶公共汽车的人之间的区别。 公共汽车
+
+and a whole bunch of people as passengers
+和一大群人作为乘客
+
+that are following you
+跟随你
+
+and taking turns driving the bus, right?
+并轮流驾驶公共汽车，对吗？
+
+If you're working on a project,
+如果您正在从事一个项目，
+
+whether it's an Open Source project or within a company
+无论是开源项目还是在
+
+where different people take the lead at different times,
+不同时间由不同人领导的公司内，
+
+you're gonna attract a different caliber of person,
+您都会吸引想要参与的不同素质的人
+
+or different type of person,
+或不同类型的人
+
+who wants to participate and carve out the path
+并开辟道路，
+
+as opposed to somebody following you.
+而不是有人跟随你。
+
+Collins-Sussman: Absolutely. So let's talk about--
+柯林斯-萨斯曼：当然。因此，让我们来谈谈——
+
+A little diversion here and talk about software tools,
+这里稍微转移一下话题，谈谈软件工具，
+
+since that's--our background is in software tools--
+因为我们的背景是软件工具——
+
+and talk about, specifically, how they affect
+并具体谈谈它们如何影响
+
+your collaboration and your social habits.
+您的协作和社交习惯。
+
+One of the classic Internet sayings, right, is,
+经典的互联网谚语之一是，
+
+"You can't fix social problems with technical solutions" right?
+“你无法用技术解决方案解决社会问题”，对吗？
+
+And there's all sorts of classic examples of, like--
+还有各种各样的经典示例，
+
+For example, you know, the whole DRM issue, right?
+例如，您知道，整个 DRM 问题，对吧？
+
+Or if we just keep inventing
+或者，如果我们只是不断发明
+
+more and more complicated DRM technology restrictions,
+越来越复杂的DRM 技术限制，
+
+they don't fix the problem, except most people will say,
+它们并不能解决问题，除非大多数人会说，
+
+"Well, really, there's some kind of social issue here."
+“嗯，真的，这里存在某种社会问题。”
+
+What is intellectual property? What is fair use?
+什么是知识产权？什么是合理使用？
+
+What is--you know, what is the nature of--
+什么是——你知道，本质是什么——
+
+Fitzpatrick: Isn't that problem solved yet?
+Fitzpatrick：这个问题还没有解决吗？
+
+Nobody downloads music anymore, right?
+没有人再下载音乐了，对吧？
+
+Collins-Sussman: Clearly, it's a societal, cultural issue, right?
+Collins-Sussman：显然，这是一个社会、文化问题，对吧？
+
+Not something that can just be papered over
+这不是可以
+
+with evermore complex DRM technologies.
+用更加复杂的DRM 技术来掩盖的事情。
+
+Or another one I've talked about is, in Version Control,
+或者我谈到的另一个问题是，在版本控制中，
+
+I see a lot of people--
+我看到很多人——
+
+A lot of administrators will start, you know--
+很多管理员会开始，你知道——
+
+especially in Open Source projects,
+特别是在开源项目中，
+
+they'll start trying to do path-based access control
+他们会开始尝试进行基于路径的访问 控制
+
+and say, "This person's allowed to commit to this branch,
+并说，“这个人可以提交到这个分支，
+
+"but not this one.
+”但不是这个。
+
+And this person can only commit to this file, but not this one."
+这个人只能提交这个文件，但不能提交这个文件。”
+
+They start creating all these complicated rules,
+他们开始创建所有这些复杂的规则，
+
+and I sort of say, "All right, well, what's going on here?
+我有点说，“好吧，好吧，这里发生了什么？
+
+Why are you creating all these technological restrictions?"
+为什么你要创造所有这些技术限制？”“
+
+"Oh, we got to make sure people
+哦，我们必须确保人们
+
+don't commit to the wrong places."
+不会在错误的地方做出承诺。”
+
+And they're like, "Well, if they did, what would happen?"
+他们会说，“好吧，如果他们这样做了，会发生什么？”
+
+You would all notice it. You'd roll it back, right?
+你们都会 注意到它。你会回滚它，对吗？
+
+'Cause it's a Version Control system.
+因为它是一个版本控制系统。
+
+You can undo, right?
+你可以撤消，对吧？
+
+You'd ask the person what happened.
+你会问那个人发生了什么。
+
+If it was a mistake, they apologize.
+如果这是一个错误，他们会道歉。
+
+If it wasn't a mistake, they're in trouble, right?
+如果不是一个错误，他们会道歉。 错误，他们有麻烦了，对吧？
+
+Or you tell them to leave the project or something.
+或者你告诉他们离开项目什么的。
+
+So it's sort of, like, okay, it's a social problem.
+所以这有点像，好吧，这是一个社会问题。
+
+You don't need this technological restriction
+你不需要这种技术限制
+
+to solve it.
+来解决它。
+
+It's not a good solution.
+这不是一个 很好的解决方案。
+
+Fitzpatrick: Or the endless spams arm race, right?
+菲茨帕特里克：或者无休止的垃圾邮件军备竞赛，对吗？
+
+I mean, that's--that's-- it goes back and forth, right?
+我的意思是，那就是——那就是——它来来回回，对吧？
+
+Collins-Sussman: The social problem being
+柯林斯-萨斯曼：社会问题是
+
+the world is full of jerks.
+世界充满了混蛋。
+
+Fitzpatrick: Right, exactly. Yeah, exactly, that's the thing.
+菲茨帕特里克：对， 正是如此。是的，正是如此。
+
+You know, the Internet-- That's what I was saying.
+你知道，互联网——这就是我所说的。
+
+The world is full of jerks, but the Internet makes it seem
+世界上充满了混蛋，但互联网让
+
+like they all live right next door to you, right?
+他们看起来就像就住在你的隔壁，对吧？
+
+[laughter]
+[笑声]
+
+So you can't use technology
+所以你不能用技术
+
+to solve these sociological problems, right?
+来解决这些社会学问题，对吧？
+
+Well, not always, okay? Collins-Sussman: Usually.
+嗯，并不总是这样，好吗？柯林斯-萨斯曼：通常。
+
+This is--this is a--
+这是--这是一个--
+
+It's sort of a-- it's a false truth,
+这是一个错误的事实，
+
+insofar as there are things you can do to encourage people
+只要你可以做一些事情来鼓励人们
+
+to "do the right thing," right?
+“做正确的事”，对吗？
+
+For example, on Google Code,
+举个例子，在Google Code上，
+
+if you want to comment on an issue on the issue track,
+如果你想在问题轨道上评论一个问题，
+
+if you want to create an issue or something or file a bug,
+如果你想创建一个问题什么的或者提交一个bug，
+
+you have to sign in, right?
+你就必须登录，对吧？
+
+There's a very simple reason for that.
+原因很简单。
+
+First of all, we want to limit spam a little bit,
+首先，我们希望稍微限制垃圾邮件，
+
+but more importantly, if someone reports a bug,
+但更重要的是，如果有人报告错误，最好
+
+it's nice to have a way to get back to them.
+有办法回复他们。
+
+I can't tell you how many times in the past
+我无法告诉你过去有多少次
+
+people have reported bugs out there,
+人们报告了错误，
+
+and they leave no contact information,
+但他们没有留下联系信息，
+
+or they screw up their email address or something like that.
+或者他们搞砸了他们的电子邮件地址或类似的东西。
+
+Collins-Sussman: Right. So that's an example
+柯林斯-萨斯曼： 是的。这是
+
+of a small technological change having a big social impact.
+一个小小的技术变革产生巨大社会影响的例子。
+
+Fitzpatrick: It doesn't solve the problem.
+菲茨帕特里克：这并不能解决问题。
+
+Collins-Sussman: But it definitely changes behavior.
+Collins-Sussman：但这确实会改变行为。
+
+Another example is on Google Code project hosting,
+另一个例子是在Google Code项目托管上，
+
+we only allow a small number of licenses,
+我们只允许少量许可证，
+
+which angers a lot of people, right?
+这激怒了很多人，对吧？
+
+They want to come in and use some Open Source license
+他们想要进来并使用一些
+
+that's fairly obscure,
+相当模糊的开源许可证，
+
+and they say, "Why isn't it on the site?"
+他们说：“为什么网站上没有它？”
+
+And our answer is, "Well, because we want to stop
+我们的答案是，“好吧，因为我们想阻止
+
+"proliferation of Open Source licenses.
+”开源许可证的扩散。
+
+We think it's bad for the Open Source world."
+我们认为这对开源世界不利。”
+
+And that's fine, you know.
+这很好，你知道。
+
+Either they'll choose one of the standard licenses,
+要么他们选择一种标准许可证，
+
+or they'll go host their code somewhere else,
+要么他们将代码托管在其他地方，
+
+which is okay, but we've had a definite impact,
+这没关系，但我们已经有了一个 确定的影响，
+
+a social impact, through that small technological choice.
+社会影响，通过小的技术选择。
+
+Fitzpatrick: Right. Collins-Sussman: So, yeah.
+菲茨帕特里克：对。柯林斯-萨斯曼：所以，是的。
+
+Sometimes you can affect--
+有时你可以影响--
+
+You may not be able to solve gigantic social problems,
+你可能无法解决巨大的社会问题，
+
+but you can have--
+但你可以--
+
+Small technological choices
+小技术 选择
+
+can have big social, behavioral changes, right?
+可能会带来巨大的社会和行为变化，对吧？
+
+Fitzpatrick: So defaults are important, okay?
+菲茨帕特里克：所以默认值很重要，好吗？
+
+I mean, you want to examine
+我的意思是，你想检查
+
+how do tools behave out of the box, okay?
+工具如何开箱即用，好吗？
+
+This doesn't actually fix the core social issue at hand,
+这实际上并不能解决手头的核心社会问题 ，
+
+but it does influence people's behavior quite heavily.
+但它确实对人们的行为影响很大。Collins
+
+Collins-Sussman: So let's look at some--
+-Sussman：所以让我们看看
+
+how some software tools behave.
+一些软件工具的行为方式。
+
+What's their default behavior,
+它们的默认行为是什么？
+
+and how does it affect the way you collaborate?
+它如何影响您的协作方式？
+
+One example is--
+一个例子是——
+
+How about, you know--
+怎么样， 你知道——
+
+On your software team, when somebody commits a change,
+在你的软件团队中，当有人提交更改时，
+
+maybe you do code review beforehand,
+也许你会事先进行代码审查，
+
+but certainly in the Open Source world,
+但当然在开源世界中，在
+
+it's pretty common to do code review
+
+
+after somebody submits a change, right?
+有人提交更改后进行代码审查是很常见的，对吗？
+
+In a lot of projects, an email will go out with the diffs,
+在很多项目中，都会发出一封包含差异的电子邮件，
+
+and it'll go into all the mailboxes
+并且它会进入
+
+of all the participants.
+所有参与者的所有邮箱。
+
+And what's cool about that is that it makes it
+最酷的一点是，它使得代码审查变得
+
+almost effortless to do code review, right?
+几乎毫不费力，对吗？
+
+It's like, their changes are being pushed right to your face,
+就像，他们的更改直接推到你面前，
+
+and you're reading your email, and you're like,
+你正在阅读电子邮件，你会想，
+
+"Oh, looks like they got a typo here or a bug.
+“哦，看起来他们在这里有一个拼写错误或一个错误。
+
+Let me reply really quick," right?
+让我很快回复，”对吗？ 与
+
+As opposed to projects that don't do that,
+不这样做的项目相反，
+
+there's almost no code review at all, right?
+几乎根本没有代码审查，对吧？
+
+Big social change for a small technological trick.
+一个小小的技术技巧带来了巨大的社会变革。
+
+Fitzpatrick: Right.
+菲茨帕特里克：对。
+
+So sort of set the Wayback Machine
+因此，在
+
+before the Internet was really popular
+互联网真正流行
+
+and Open Source was really huge.
+和开源真正巨大之前就设定了时光机。
+
+How many people here have heard of CVS?
+这里有多少人听说过 CVS？
+
+The Version Control system, not the pharmacy.
+版本控制系统，而不是药房。
+
+Okay, good.
+好的。
+
+Collins-Sussman: We actually asked a bunch of students.
+Collins-Sussman：我们实际上问了一群学生。
+
+We gave this talk a few weeks ago to a bunch of students,
+几周前，我们向一群学生做了这个演讲，
+
+and we asked, "How many people have heard of CVS?"
+我们问：“有多少人听说过 CVS？”
+
+And they all raised their hands. Fitzpatrick: I was blown away.
+他们都举起了手。菲茨帕特里克：我被震撼了。
+
+Collins-Sussman: We were like, "Well, you're only, like, 19."
+Collins-Sussman：我们当时想，“好吧，你才 19 岁。”
+
+And they're like--
+他们就像——
+
+"How many people have heard of the Version Control...?
+“有多少人听说过版本控制……？
+
+Nobody raised their... Fitzpatrick: No one at all.
+没有人提出他们的意见……Fitzpatrick：根本没有人。
+
+Which is good, really.
+这真的很好。Collins
+
+Collins-Sussman: Change that slide.
+-Sussman：更改那张幻灯片
+
+Fitzpatrick: You know, people talk
+。Fitzpatrick：你知道，人们
+
+about Open Source getting big.
+谈论开源变得越来越大。
+
+They talk about Richard Stallman.
+他们谈论 Richard Stallman。
+
+They talk about Linus Torvalds.
+他们谈论 Linus Torvalds。
+
+But CVS actually played a really important role,
+但 CVS 实际上发挥了非常重要的作用，
+
+insofar as it cre--
+因为它在 90 年代中期
+
+There was a feature created in it in the mid '90s
+创建了一个功能
+
+called Anonymous Pserver.
+它是
+
+It was anonymous network access,
+匿名网络访问，互联网上的
+
+where any random one of these jerks on the Internet
+任何一个混蛋都
+
+could download your source code
+可以将您的源代码下载
+
+into a CVS working copy,
+到 CVS 工作副本中，
+
+fiddle with it, and then send you a nice, small,
+摆弄它，然后向您发送一个漂亮的、小而
+
+concise patch that could fix a bug,
+简洁的补丁，可以修复一个问题
+
+add a new feature, et cetera.
+
+
+Collins-Sussman: That was a huge social event, right?
+Collins-Sussman：那是一次巨大的社交活动，对吧？
+
+Fitzpatrick: It had a huge impact,
+Fitzpatrick：它产生了巨大的影响，
+
+insofar as it made it virtually effortless...
+因为它几乎毫不费力地完成了...
+
+Collins-Sussman: ...Mercurial?
+Collins-Sussman：...Mercurial？
+
+A few. Okay.
+一些。好吧
+
+Darks.
+。Darks。Fitzpatrick
+
+Fitzpatrick: Bizarre, anyone?
+：奇怪，有人吗？
+
+Collins-Sussman: Monotone. Fitzpatrick: No, just kidding.
+Collins-Sussman：单调。Fitzpatrick：不，只是开玩笑。Collins
+
+Collins-Sussman: Okay, so...
+-Sussman：好吧，所以...
+
+But distributed versions was kind of interesting.
+但是分布式版本有点有趣。
+
+What are the default behaviors of distributed Version Control?
+分布式版本控制的默认行为是什么？
+
+It's sort of a double-edged sword, right?
+这是一把双刃剑，对吧？
+
+On the one hand, it's kind of not so great,
+一方面，这有点不太好，
+
+because the default behavior, when you start off,
+因为当你开始时，默认行为
+
+is to fork, right?
+是分叉，对吧？
+
+You start off grabbing the entire history
+你一开始抓住整个历史
+
+and crawling into a cave, right?
+并爬进洞穴，对吧？ 如果你想做出贡献，
+
+And it's actually a little bit more work
+实际上需要做更多的工作——
+
+if you want to contrib-- get your code back.
+取回你的代码。
+
+You have to find someone else to talk to,
+你必须找其他人交谈，
+
+find a server, do a push, right?
+找到服务器，进行推送，对吧？
+
+I mean, it's actually--
+我的意思是，实际上——
+
+You know, there's a little more effort involved.
+你知道，需要付出更多的努力。
+
+So in one sense, it discourages collaboration,
+因此，从某种意义上说，它不鼓励协作，
+
+but in another sense, it also encourages collaboration,
+但从另一种意义上说，它也鼓励协作，
+
+because--excuse me--
+因为——对不起——
+
+it lowers the barrier for everyone to participate, right?
+它降低了每个人参与的障碍，对吧？
+
+Instead of just, you know, "the official committers"
+您知道，项目中的“官方提交者”不仅
+
+on a project having access to the history,
+能够访问历史记录，
+
+having the ability to do checkpoints of their code,
+能够对其代码进行检查点，
+
+now everybody in the world has the exact same tool set,
+现在世界上的每个人都拥有完全相同的工具集，
+
+and everybody can checkpoint their code
+每个人都可以检查他们的代码
+
+and do whatever they want, and there's no--
+并 做他们想做的事，但没有——
+
+Being a committer really just becomes a social title, right?
+成为一名提交者真的只是成为一种社会头衔，对吗？
+
+It becomes a branding job rather than
+它变成了一项品牌推广工作，而不是
+
+a "I have special tools, and you don't" kind of thing.
+“我有特殊工具，而你没有”之类的事情。
+
+Fitzpatrick: And I think this is really great,
+菲茨帕特里克：我认为这真的很棒，
+
+but I think it does concern us a little bit
+但我认为这确实让我们有点担心
+
+that, you know--
+，你知道——
+
+What are people gonna do in four or five years?
+人们在四五年内会做什么？
+
+Is this gonna sort of tilt the dial
+这是否会导致合作
+
+back in the other direction for collaboration?
+向另一个方向倾斜？
+
+Collins-Sussman: But like you said,
+Collins-Sussman：但就像你说的，
+
+you know, it lowers the barrier for people walking by
+你知道，它降低了路过的人
+
+to participate, right?
+参与的障碍，对吗？
+
+I mean, in the old days, you had to check out the code,
+我的意思是，在过去，您必须检查代码，通过
+
+email a patch,
+电子邮件发送补丁，
+
+wait for somebody on the list to review your patch.
+等待列表中的某人审查您的补丁。
+
+Maybe they liked it, maybe they didn't.
+也许他们喜欢，也许他们不喜欢。
+
+And then you were kind of helpless.
+然后你就有点无助了。
+
+Now you don't have to wait for that,
+现在你不必等待，
+
+so it might be a good thing too.
+所以这可能也是一件好事。
+
+Fitzpatrick: Right. So there's a moral to this story, right?
+菲茨帕特里克：对。 所以这个故事有一个寓意，对吗？
+
+Which is you need to pay attention
+您需要注意
+
+to the default behaviors of the tools that you have.
+您所拥有的工具的默认行为。
+
+And you need to ask yourself,
+你需要问自己，
+
+"What is the social behavior of this--
+“这个工具的社交行为是什么？
+
+this tool is encouraging for-- I mean, to use?"
+我的意思是，这个工具鼓励使用？” 基本上，
+
+And that can vastly affect the dynamic of your team, basically.
+这会极大地影响你团队的活力。
+
+Collins-Sussman: So there's one more thing
+Collins-Sussman：所以
+
+we want to talk about, which is how to--
+我们还想谈一件事，那就是如何——
+
+Right. So we're talking about--
+正确。所以我们正在谈论——
+
+We want to collaborate. Collaboration's important.
+我们想要合作。合作很重要。
+
+Don't be afraid. Pay attention to what your tools are doing.
+别害怕。 注意你的工具正在做什么。
+
+But here's the big question--
+但这里有一个大问题——
+
+When is a good time to collaborate, right?
+什么时候是合作的好时机，对吧？
+
+Do you do it early on? Do you do it late?
+你很早就这样做吗？你做晚了吗？
+
+So we have done some wonderful research...
+所以我们做了一些精彩的研究...
+
+Fitzpatrick: Minutes of research.
+Fitzpatrick：研究纪要。
+
+Collins-Sussman: Minutes of research
+Collins-Sussman：
+
+about the evolution of a project, right?
+关于项目演变的研究纪要，对吧？
+
+I mean, it starts out as an idea in your head, right?
+我的意思是，它一开始只是你脑海中的一个想法，对吗？
+
+And then after a little while, you make a prototype
+然后过了一会儿，你制作了一个原型，
+
+just to sort of show other people
+只是为了向其他人展示，
+
+or maybe just to satisfy yourself that it's gonna work.
+或者只是为了让自己确信它会起作用。
+
+And then you say, "Hey, come take a look at this."
+然后你说：“嘿，来看看这个。”
+
+You show one person or a few friends.
+您向一个人或几个朋友展示。
+
+Aah. Ooh, sorry. Nice.
+啊。 哦，抱歉。好的。
+
+And then you write a lot of code--code, code, code.
+然后你写了很多代码——代码，代码，代码。
+
+And then you dominate the Earth, and everything's fine.
+然后你主宰了地球，一切就都好了。
+
+So the real question is, while you're doing this phase--
+所以真正的问题是，当你在做这个阶段时——
+
+First of all, you don't have to hide, right?
+首先，你不必隐藏，对吧？
+
+I mean, you can do all of these phases in the public eye.
+我的意思是，你可以在公众面前完成所有这些阶段。
+
+It's really a question of,
+这实际上是一个问题，
+
+at what point do you start advertising yourself, right?
+你什么时候开始为自己做广告，对吧？
+
+Like, even if you've just--
+就像，即使你刚刚——
+
+If you're still working on a mock-up,
+如果你仍在制作模型，
+
+it's not like you need to be in a cave to do that, right?
+你也不需要在洞穴里才能做到这一点，对吧？
+
+Chances are, most people aren't gonna know you're working
+大多数人很可能不会知道您正在开发
+
+on that mock-up, even if you're doing it
+该模型，即使您是
+
+on an Open Source repository.
+在开源存储库上进行的。
+
+They're not gonna see you until you start screaming
+他们不会见到你，除非你开始尖叫
+
+and mailing lists and saying,
+并发送邮件列表并说：
+
+"Hey, come look at what I'm doing."
+“嘿，来看看我在做什么。”
+
+Fitzpatrick: But the real question here is,
+菲茨帕特里克：但真正的问题是，
+
+where does the third milestone go, right?
+第三个里程碑在哪里，对吧？
+
+You don't want to start involving people
+您不想
+
+too early or too late.
+太早或太晚开始让人们参与。
+
+For good or for bad,
+无论好坏，
+
+people typically involve people too late.
+人们通常都太晚才参与进来。
+
+It's rarely that someone
+很少有人
+
+involves people too early, you know?
+过早地与人交往，你知道吗？
+
+If you're done, it's too late, okay?
+如果你完成了，那就太晚了，好吗？
+
+Collins-Sussman: [laughs]
+Collins-Sussman：[笑]
+
+Fitzpatrick: But there's a huge risk of wasting your own time.
+Fitzpatrick：但是浪费自己时间的风险很大。
+
+You know, you might be trying to come up with a project
+您知道，您可能正在尝试提出一个
+
+to change the world.
+改变世界的项目。
+
+It might be doing something Open Source.
+它可能正在做一些开源的事情。
+
+You might be just coming up with sort of something
+您可能只是在业余时间想出一些东西，
+
+in your spare time you want to pitch to your team
+想向在办公室共事的团队推销
+
+that you work with at the office, right?
+，对吗？
+
+But if you go off and you just make a whole lot of progress
+但如果你离开后就取得了很大的进步，
+
+without talking to the people, getting some feedback,
+而不与人们交谈，获得一些反馈，那么
+
+there's a huge risk of just wasting your own time, you know?
+就有浪费自己时间的巨大风险，你知道吗？
+
+You could have really bad design choices
+您可能会做出非常糟糕的设计选择，
+
+that are undoable without starting over.
+并且无需重新开始就无法撤销。
+
+You know, anyone--Those of you guys who do code reviews,
+你知道，任何人 - 那些进行代码审查的人，
+
+if you ever get somebody that gives you
+如果有人给你提供
+
+a 5,000-line code review,
+5,000 行代码审查，除了检查语法之外，
+
+what can you really do with that other than check it for syntax?
+你还能用它做什么？
+
+Or check it and say, "Oh, you forgot.
+或者检查一下并说：“哦，你忘了。
+
+This is two spaces here. It should be one."
+这里是两个空格。应该是一个。”
+
+Collins-Sussman: Well, I mean, it's too late to really go back
+Collins-Sussman：嗯，我的意思是，现在真正回去
+
+and make significant changes. Fitzpatrick: Right.
+做出重大改变已经太晚了。菲茨帕特里克：对。
+
+And you're not gonna want to digest all that.
+你不会想消化所有这些。
+
+To digest what that amount of code would do,
+为了消化这么多代码的用途，
+
+you really want to see a design doc
+您确实需要查看设计文档
+
+or talk to the person about it.
+或与该人讨论它。
+
+Collins-Sussman: The other issue is that a lot of people
+Collins-Sussman：另一个问题是很多人
+
+aren't gonna be interested in your project,
+不会对你的项目感兴趣，
+
+because there's no opportunity for them to take a stake, right?
+因为他们没有机会入股，对吗？
+
+If your project's 95% finished,
+如果你的项目已经完成了 95%，那
+
+why would I want to get involved when it's mostly done, right?
+我为什么要在大部分完成的时候参与其中，对吧？ 我
+
+There's very little opportunity
+几乎没有机会
+
+for me to come in and make a mark
+进来留下印记，
+
+and feel like I'm really affecting the direction, right?
+并感觉自己真正影响了方向，对吗？
+
+So, uh... [laughs]
+所以，呃...[笑]
+
+Talk about brain crack.
+谈论脑裂。
+
+Fitzpatrick: Brain crack.
+菲茨帕特里克：脑裂。
+
+Yeah, so anybody here ever watch the Ze Frank on the Web?
+是的，这里有人在网上看过 Ze Frank 吗？ 几年前
+
+He had this thing called "The Show" a few years ago.
+他有一个叫做“The Show”的东西。
+
+He had this one episode where he talked about brain crack.
+他有一集谈到了脑裂。
+
+It's these ideas people have. People have ideas all the time.
+人们有这些想法。人们总是有想法。
+
+You have an idea, and you think, "This is a brilliant idea."
+你有一个想法，你会想：“这是一个绝妙的想法。”
+
+You sort of nurture it in your head,
+你在脑海中培育它，
+
+and you think about how wonderful it is,
+你会想到它是多么美妙，
+
+and there's angels around,
+周围有天使，
+
+and it's the greatest thing ever.
+这是有史以来最伟大的事情。
+
+You never act on it,
+你从不采取行动，
+
+because as soon as you try and implement it or act on it,
+因为一旦你尝试实施它或采取行动，
+
+you usually find out that most of them are garbage, okay?
+你通常会发现它们大多数都是垃圾，好吗？
+
+But, you know, you keep these ideas to yourself,
+但是，你知道，你把这些想法留给自己，
+
+and they're sort of, like-- He calls them brain crack,
+它们有点像——他称之为脑裂，
+
+you know, 'cause you just feed on them.
+你知道，因为你只是以它们为食。
+
+So the point is to try to get things out
+因此，关键是要尽快解决问题
+
+as quickly as possible.
+。
+
+Collins-Sussman: Well, let's look at the opposite scenario.
+Collins-Sussman：好吧，让我们看看相反的情况。
+
+What happens if you start getting collaborators
+如果您在此过程中过早开始让合作者
+
+working with you too early in the process?
+与您合作，会发生什么？
+
+And the answer to that-- I think a good example
+答案是——我认为一个很好的例子
+
+is go look at a huge number of projects
+是查看
+
+on SourceForge or Google Code,
+SourceForge 或 Google Code 上的大量项目，
+
+where there's, like, one author, and there's nothing up there
+其中有一个作者，但那里什么也没有，
+
+but, like, maybe a Wiki page that says,
+但可能有一个 Wiki 页面，上面写着 ，
+
+"Dudes, we should write this cool software
+“伙计们，我们应该编写这个很酷的软件
+
+and take over the world.
+并接管世界。让
+
+Let's talk about it," right?
+我们来谈谈吧，”对吧？
+
+And, like...
+而且，就像......
+
+you know, one of two things happens.
+你知道，发生了两件事之一。
+
+Either nobody cares, and nobody comes, nothing happens,
+要么没有人关心，没有人来，什么也没有发生，
+
+'cause there's no prototype.
+因为没有原型。
+
+There's nothing to look at, right?
+没什么可看的吧？
+
+Or, even worse, 50 people come, or 100 people come,
+或者，更糟糕的是，有 50 个人来，或者 100 个人来，
+
+and they all want to do different things,
+他们都想做不同的事情，
+
+and you end up sort of having this endless discussion
+最终你会无休止地讨论
+
+about what it could be,
+它可能是什么，
+
+and you get into sort of this design by committee
+然后你就进入了委员会的设计，
+
+where nothing happens, right?
+其中 什么也没发生，对吧？
+
+And the whole thing just kind of stalls.
+整个事情就陷入停滞了。
+
+Fitzpatrick: Well, you--you're the great--
+菲茨帕特里克：嗯，你——你是伟大的——
+
+You run the risk of attracting a lot of people
+你冒着吸引很多人
+
+that don't want to do what you want to do, okay?
+不想做你想做的事的风险，好吗？
+
+You want to go there,
+你想去那里，
+
+and somebody shows up and wants to go here.
+有人出现并想去这里。
+
+And you didn't really communicate
+而且你一开始并没有真正表达出
+
+that you wanted to go there in the first place.
+你想去那里。
+
+So they're not wrong.
+所以他们并没有错。
+
+You're just gonna waste a lot of time and energy.
+你只会浪费大量的时间和精力。
+
+Collins-Sussman: So what you want to do
+Collins-Sussman：所以你要做的
+
+is you want to go for the sweet spot.
+就是找到最佳位置。
+
+What we call the sweet spot is you have a coherent design
+我们所说的最佳点是你有连贯的设计
+
+and a mission statement, right?
+和使命宣言，对吗？
+
+Clearly written out on your Website, goals and non-goals.
+在您的网站上清楚地写出目标和非目标。
+
+What the purpose is-- exactly what you're gonna do.
+目的是什么——正是你要做的事情。
+
+So people can't show up and completely derail
+所以人们不能出现并完全破坏
+
+the direction that you've chosen, right?
+你选择的方向，对吗？
+
+And you got to have some amount of running code.
+而且你必须有一定数量的运行代码。
+
+It doesn't have to be a lot,
+不需要很多，
+
+just enough to say that you're serious
+只要足以表明你是认真的，
+
+and to get the idea going in other people's heads--
+并且让这个想法进入其他人的头脑——
+
+Just a proof of concept, right?
+只是一个概念证明，对吧？
+
+Or just a mock-up or something
+或者只是一个模型或其他东西，
+
+so that it's far enough along
+这样它就足够远，让人
+
+that it feels like there's some inertia, right?
+感觉有一些惯性，对吧？
+
+But not so far enough along that people feel like,
+但还没有走得足够远，以至于人们会觉得，
+
+"Oh, I can still get in and get involved
+“哦，我仍然可以参与并参与
+
+and really influence this project," right?
+并真正影响这个项目，”对吧？
+
+"Make a mark. There's a lot of work to do still."
+“做个记号。还有很多工作要做。”
+
+Fitzpatrick: Right, but you have to be ready to make revisions.
+Fitzpatrick：是的，但是你必须准备好进行修改。
+
+You have to be ready for that, for the criticism
+你必须为此做好准备，为批评做好准备
+
+and, you know, it might be to make some changes
+，你知道，这可能是做出一些改变
+
+and discuss and backtrack...
+、讨论和回溯……
+
+Collins-Sussman: And document your failures.
+Collins-Sussman：并记录你的失败。
+
+Fitzpatrick: Don't hide the history.
+菲茨帕特里克：不要隐藏历史。
+
+I mean, that's really-- It's a really important thing.
+我的意思是，这真的是一件非常重要的事情。
+
+One thing that we've noticed a lot in Open Source projects
+我们在开源项目中经常注意到的一件事
+
+is that there's a lot of documentation
+是，有很多关于
+
+about what they're gonna do and what they'd like to do
+他们将要做什么、他们想要做什么
+
+and sort of what they've done that's worked for them.
+以及他们已经做了什么对他们有用的文档。
+
+But rarely do you find any documentation
+但是你很少找到
+
+of stuff that they've tried that they failed at, you know?
+他们尝试过但失败的事情的任何文档，你知道吗？
+
+People have a design doc that didn't work.
+人们有一个不起作用的设计文档。
+
+They just delete it.
+他们只是删除它。
+
+They're like, "Oh, I'm gonna pretend
+他们就像，“哦，我会假装
+
+like that never happened," right?
+这件事从未发生过，”对吧？
+
+Collins-Sussman: That whole branch never happened.
+Collins-Sussman：整个分支从未发生过。
+
+Fitzpatrick: Right, exactly.
+菲茨帕特里克：对，完全正确。
+
+But in a lot of cases, this can be a huge time-saver,
+但在很多情况下，这可以节省大量时间，
+
+because let's say that you're having a huge discussion
+因为假设您正在对某件事进行大量讨论
+
+about something, and you go off and you try it,
+，然后您开始尝试，
+
+and it doesn't work, so you delete the code and whatnot.
+但它不起作用，因此您删除了 代码之类的。
+
+A year later, someone comes up and has this huge discussion.
+一年后，有人出现并进行了如此大的讨论。
+
+They want to try this great idea
+他们想尝试
+
+that you did last year and failed, okay?
+你去年做过但失败了的好主意，好吗？
+
+Now, it's easy enough if you can point them
+现在，如果您可以将他们指向发生
+
+to the change list where it happened.
+更改的列表，那就很容易了。
+
+Collins-Sussman: What if you've left the project, right?
+Collins-Sussman：如果你离开了这个项目怎么办，对吗？
+
+What if you've left the project,
+如果您离开了该项目，
+
+or the person who tried the experiment is gone?
+或者尝试该实验的人离开了怎么办？
+
+They're not there to remember
+他们不会记住，
+
+or even point you to the deleted branch to read the docs.
+甚至不会将您指向已删除的分支来阅读文档。
+
+Fitzpatrick: It's good to have that mailing list
+Fitzpatrick：很高兴能有一个邮件列表，
+
+that's read there that that happened.
+在那里可以看到发生过的事情。
+
+It's not bad. It's okay.
+不算太差。没关系。
+
+The world is full of false starts
+世界上充满了
+
+that eventually rot away.
+最终会腐烂的错误开始。
+
+But we have a couple case studies here to talk about.
+但我们这里有几个案例研究可以讨论。
+
+First of all is Subversion,
+首先是 Subversion，
+
+which is--you know, was our project many years ago.
+你知道，这是我们多年前的项目。
+
+And, uh--Well, you go ahead and tell it.
+而且，呃——好吧，你继续说吧。
+
+Collins-Sussman: Well, I mean,
+Collins-Sussman：嗯，我的意思是，
+
+I don't know if this is the model,
+我不知道这是否是模型，
+
+but we think we did a pretty good job
+但我们认为我们在
+
+with starting this project.
+启动这个项目方面做得非常好。
+
+I mean, it started out with three guys in an office
+我的意思是，一开始是办公室里的三个人
+
+writing a design doc together, just the three of them.
+一起写一份设计文档，只有他们三个人。
+
+Took us maybe two weeks,
+我们大概花了两周、
+
+three weeks to actually get it right.
+三周的时间才真正把它做好。
+
+And I think three's kind of the sweet number.
+我认为三是一个甜蜜的数字。
+
+Like, one person writing a design doc
+就像，一个写设计文档的人
+
+is gonna make a lot of wrong choices.
+会做出很多错误的选择。
+
+Two or three people is great,
+两三个人就很好了，
+
+because they can call each other.
+因为他们可以互相打电话。
+
+They can say, "That's a bad idea. Here's why."
+他们可以说：“这是一个坏主意。原因如下。”
+
+And there's enough perspective.
+并且有足够的视角。
+
+If you get more than three people,
+如果超过三个人，
+
+then it starts to become a circus, right?
+那就开始变成马戏团了，对吧？
+
+It's the same reason, like, why meetings
+这就是为什么
+
+with more than five people never accomplish anything.
+超过五个人的会议永远不会取得任何成果的原因。
+
+Yeah, never converge.
+是的，永远不会收敛。
+
+Fitzpatrick: Everybody ever travel with a group of people,
+Fitzpatrick：每个人都曾经和一群人一起旅行过，
+
+like travel around Europe or backpack or something?
+比如环游欧洲或者背包什么的？
+
+You get more than six people, you can't go anywhere.
+超过六个人，你哪儿也去不了。
+
+[laughter]
+[笑声]
+
+You go to the next corner, and it's a big discussion.
+你走到下一个角落，这是一个很大的讨论。
+
+Collins-Sussman: That's true of a business meeting too.
+Collins-Sussman：商务会议也是如此。
+
+Fitzpatrick: Exactly. It's also true about meetings.
+菲茨帕特里克：没错。会议也是如此。
+
+Collins-Sussman: So with design docs,
+Collins-Sussman：对于设计文档，
+
+I think two or three people is sort of that perfect number.
+我认为两到三个人是完美的数字。
+
+And then after we got the design doc,
+然后在我们拿到设计文档后，
+
+we went, and we brought it to a larger forum.
+我们就把它带到了一个更大的论坛。
+
+We gave a presentation about it.
+我们对此进行了介绍。
+
+We invited comments, and we put it up on a web site,
+我们邀请评论，并将其发布在网站上，
+
+and we started getting feedback.
+然后我们开始收到反馈。
+
+And then we just started coding,
+然后我们就开始编码，令人
+
+and, amazingly, about a month or two later,
+惊讶的是，大约一两个月后，
+
+we had some working-- very basic working code.
+我们有了一些工作——非常基本的工作代码。
+
+And suddenly, as soon as we had working code,
+突然间，一旦我们有了工作代码，
+
+suddenly all these people started showing up.
+所有这些人突然开始出现。
+
+We didn't even advertise, but somehow,
+我们甚至没有做广告，但不知何故，
+
+it was like we crossed this magic threshold,
+就像我们跨过了这个神奇的门槛，
+
+and we said, "It's okay now. Come on, come on, come on."
+我们说，“现在没关系了。来吧，来吧，来吧。”
+
+Fitzpatrick: We have to remember nine years ago,
+Fitzpatrick：我们必须记住九年前，
+
+it was CVS in the Open Source world.
+那是开源世界中的CVS。
+
+Collins-Sussman: It was only CVS.
+Collins-Sussman：这只是 CVS。
+
+Fitzpatrick: It was only CVS in the Open Source world.
+Fitzpatrick：开源世界中只有 CVS。 就是
+
+That was it.
+这样。
+
+But the other thing-- You're erasing history here.
+但另一件事——你正在抹去这里的历史。
+
+You forgot to tell them about us going into a cave.
+你忘了告诉他们我们要进入一个山洞。
+
+Collins-Sussman: It never happened.
+柯林斯-萨斯曼：这从未发生过。
+
+Fitzpatrick: There was a lot of people
+Fitzpatrick：有很多人
+
+that showed up a little bit early almost,
+几乎提前出现了一点，
+
+and we said, "All right, we're gonna create
+我们说，“好吧，我们要创建
+
+"this private mailing list
+“这个私人邮件列表
+
+"and have our design discussions there,
+”并在那里进行设计讨论，
+
+because these people are distracting us."
+因为这些人分散了我们的注意力。  ”
+
+Collins-Sussman: Well, we were embarrassed.
+Collins-Sussman：嗯，我们很尴尬。
+
+Fitzpatrick: Yeah, but Brian Behlendorf
+菲茨帕特里克：是的，但是布莱恩·贝伦多夫
+
+was outraged.
+很愤怒。
+
+Anybody who knows Brian Behlendorf,
+任何认识布莱恩·贝伦多夫的人都知道，
+
+the guy is never outraged.
+他从来不会生气。
+
+But he was very angry,
+但他非常生气，
+
+and he told us to cut it out, basically,
+他告诉我们基本上停止它，
+
+and get our butts back out there.
+然后让我们的屁股回到那里。
+
+Collins-Sussman: Stop talking in private, right?
+Collins-Sussman：别再私下说话了，对吧？
+
+If they're bored by what we're saying, they can leave.
+如果他们对我们所说的感到厌倦，他们可以离开。
+
+Fitzpatrick: Right. And we were pretty indignantly angry
+菲茨帕特里克：对。 当时我们对此非常愤怒
+
+about it at the time.
+。
+
+But, you know, four years later,
+但是，你知道，四年后，
+
+you know, we're laughing about it.
+你知道，我们对此一笑置之。
+
+He was totally right.
+他是完全正确的。
+
+Collins-Sussman: So what's our other...?
+Collins-Sussman：那么我们的另一个......是什么？
+
+Fitzpatrick: Our next case study--
+Fitzpatrick：我们的下一个案例研究--
+
+Collins-Sussman: Well, you talk.
+Collins-Sussman：好吧，你说。
+
+Fitzpatrick: All right, next case study is the two of us.
+Fitzpatrick：好吧，下一个案例研究是我们两个人。
+
+So we've given dozens of talks together
+所以我们过去一起做过几十次演讲
+
+over the past, I don't know, four years, five years,
+，我不知道，四年，五年，
+
+and we've known each other for about 10 or 11,
+我们已经认识了大约 10 或 11 年，
+
+but sort of the case study is how we write our talks.
+但案例研究是我们如何写我们的演讲 。
+
+I mean, what we've done over the past five years is we take--
+我的意思是，过去五年我们所做的就是——
+
+we put the phones away, leave the laptops at the office,
+我们把手机收起来，把笔记本电脑留在办公室，
+
+take a couple notebooks, and go to a cafe.
+带上几本笔记本，然后去咖啡馆。
+
+And then they close the cafe.
+然后他们关闭了咖啡馆。
+
+Collins-Sussman: Paper notebooks, made of tree.
+Collins-Sussman：纸质笔记本，由树制成。
+
+Fitzpatrick: Then they close the cafe, and we find another cafe,
+菲茨帕特里克：然后他们关闭了咖啡馆，我们找到了另一家咖啡馆，
+
+and they close that cafe.
+然后他们关闭了那家咖啡馆。
+
+So if we show up in your cafe, you might want to throw us out.
+所以如果我们出现在你的咖啡馆里，你可能想把我们赶出去。
+
+But we sit down there and--
+但我们坐在那里——
+
+Oh, I forgot to plug in the laptop.
+哦，我忘了给笔记本电脑插上电源。
+
+Collins-Sussman: Good thing we're almost done.
+Collins-Sussman：幸好我们快完成了。
+
+Fitzpatrick: Yeah, good thing we're almost done.
+Fitzpatrick：是的，幸好我们快完成了。
+
+Collins-Sussman: Except we lost our...
+Collins-Sussman：除了我们失去了...
+
+Fitzpatrick: Lost our...
+Fitzpatrick：失去了...
+
+Is there power? Collins-Sussman: There it is.
+有力量吗？柯林斯-萨斯曼：就是这样。
+
+Fitzpatrick: Oh, uh, grab it.
+Fitzpatrick：哦，呃，抓住它。
+
+It's over here, sorry.
+就到这里了，抱歉。
+
+Collins-Sussman: That's it.
+柯林斯-萨斯曼：就是这样。
+
+Fitzpatrick: So this is a great example of failure.
+菲茨帕特里克：所以这是一个很好的失败例子。
+
+This is why we did this.
+这就是我们这样做的原因。
+
+[laughter] This is completely intentional.
+[笑声]这完全是故意的。
+
+You got the plug over there? Thank you.
+你那边有插头吗？谢谢。
+
+Collins-Sussman: There we go.
+柯林斯-萨斯曼：我们开始吧。
+
+Fitzpatrick: All right, that's much better.
+Fitzpatrick：好吧，那好多了。
+
+Collins-Sussman: Awesome.
+柯林斯-萨斯曼：太棒了。
+
+Fitzpatrick: Gosh, I feel stupid.
+菲茨帕特里克：天哪，我觉得自己很蠢。
+
+So case study is forgetting to plug your laptop in.
+因此，案例研究就是忘记插入笔记本电脑。
+
+But so we sit down with-- on paper and we just brainstorm.
+但是，我们坐下来在纸上进行头脑风暴。
+
+One of us usually has an idea for what we want to talk about.
+我们中的一个人通常对我们想要谈论的内容有一个想法。
+
+And we'll brainstorm or sort of riff on that idea.
+我们将对这个想法进行集思广益或即兴发挥。
+
+And we act as filters for each other.
+我们互相充当过滤器。
+
+"Oh, we think that's a good idea.
+“哦，我们认为这是个好主意。
+
+Let's go in that direction. Let's not."
+让我们朝那个方向走。但我们不要。”
+
+What we wind up with at the end is a whole bunch of ideas,
+最后我们得到的是一大堆想法，
+
+and then once we get the ideas together,
+然后一旦我们把这些想法整合在一起，
+
+we put it together in an outline
+我们就把它放在一个大纲中，
+
+and try and make it a little bit more coherent
+并尝试让它更加连贯
+
+and group like things together.
+，并将类似的东西组合在一起。
+
+Collins-Sussman: And then someone else goes
+Collins-Sussman：然后其他人将
+
+and puts it into slides and then gives it to the other person.
+其放入幻灯片中，然后将其交给其他人。
+
+Then they change the slides.
+然后他们更换幻灯片。
+
+It sort of bounces back and forth, right?
+它有点来回反弹，对吧？
+
+But it's a nice gradual evolution.
+但这是一个很好的渐进演变。
+
+At no point are we hiding from each other or--
+我们在任何时候都不会互相隐藏，或者——
+
+Fitzpatrick: But another thing we learned
+菲茨帕特里克：但我们学到的另一件事
+
+is that if you're gonna give a talk at an event like this,
+是，如果你要在这样的活动上发表演讲，
+
+you want to actually not walk in here completely fresh
+你实际上不想完全新鲜地走进这里
+
+and never having spoken this before.
+，从来没有说过这样的话 前。
+
+So we can stand at home
+因此，我们可以站在家里
+
+or in the office and do it in a conference room,
+或办公室，在会议室中进行操作，
+
+but we decided to give a presentation
+但我们决定
+
+at the local user group in Chicago,
+在芝加哥的本地用户组中进行演示，
+
+and we learned some things about what did and what didn't work.
+我们了解了一些关于哪些有效、哪些无效的信息。
+
+For example, when you're speaking
+例如，当您
+
+to a room full of 19-year-olds, they don't know what CVS is.
+与一屋子 19 岁的人交谈时，他们不知道 CVS 是什么。
+
+Then we also gave it to the engineers
+然后我们还将其提供给
+
+in our office in Chicago,
+芝加哥办公室的工程师，
+
+and we got some great feedback from them.
+并从他们那里得到了一些很好的反馈。
+
+And then we gave it here, and we learned to plug in the laptop.
+然后我们把它放在这里，我们学会了给笔记本电脑插上电源。
+
+Collins-Sussman: Which you're reading quickly.
+Collins-Sussman：您读得很快。
+
+Fitzpatrick: Yes, exactly.
+菲茨帕特里克：是的，完全正确。
+
+That's the first time I've made that mistake,
+这是我第一次犯这样的错误，
+
+and hopefully I won't fail that way again, at least.
+希望至少我不会再犯同样的错误。
+
+Collins-Sussman: All right, so let's just back up really quick.
+Collins-Sussman：好吧，让我们快速备份。
+
+We have our obligatory summary,
+我们有强制性摘要，
+
+just in case you forgot what we were saying.
+以防您忘记我们所说的内容。
+
+So there are no geniuses.
+所以没有天才。
+
+Fitzpatrick: There are very few geniuses.
+菲茨帕特里克：天才很少。
+
+Is Jeff Dean here? Collins-Sussman: Okay.
+杰夫·迪恩在吗？柯林斯-萨斯曼：好的。
+
+[laughter] Fitzpatrick: Okay.
+[笑声]菲茨帕特里克：好的。
+
+I was told by another Googler
+另一位 Google 员工告诉我，
+
+if Jeff was here, we're gonna be in deep trouble.
+如果杰夫在这里，我们就会陷入大麻烦。
+
+Collins-Sussman: So right. So there's no geniuses.
+柯林斯-萨斯曼： 没错。所以没有天才。
+
+It's our natural instinct to try and want to be a genius,
+尝试并想成为天才是我们的本能，
+
+but we should fight that
+但我们应该与之抗争，
+
+and actually try to collaborate as much as we can, early, often.
+并实际上尽可能多地尽早合作。
+
+Don't be afraid of collaboration.
+不要害怕合作。
+
+And pay attention to what your tools are doing to you
+并注意你的工具对你
+
+and the people you work with,
+和你的同事所做的事情，
+
+'cause they do affect your collaborative behavior.
+因为它们确实会影响你的协作行为。
+
+And finally, make sure you're paying attention
+最后，确保你在
+
+to when you collaborate, right?
+合作时注意，对吧？
+
+Not too early, not too late.
+不算太早，也不算太晚。
+
+It all is sort of--
+这一切都有点——合作成功
+
+There's a critical sweet spot for success in collaboration.
+有一个关键的最佳点。
+
+Fitzpatrick: Right.
+菲茨帕特里克：对。
+
+And of course, there's actually a secret to all this
+当然，这一切实际上有一个秘密，
+
+that you probably shouldn't share outside of this room,
+你可能不应该在这个房间之外分享，
+
+but believe it or not, if you actually do all these things,
+但不管你信不信，如果你真的做了所有这些事情，
+
+people will think you're a genius.
+人们会认为你是天才。
+
+So--'Cause it's not the typical thing that people do.
+所以——因为这不是人们通常做的事情。
+
+People don't make themselves vulnerable.
+人们不会让自己变得脆弱。
+
+They don't sort of-- They're not open to influence.
+他们不接受影响。
+
+And, uh...
+而且，呃...
+
+Collins-Sussman: That's it.
+Collins-Sussman：就是这样。
+
+Fitzpatrick: But that's it. Thanks.
+菲茨帕特里克：但就是这样。谢谢。
+
+[applause]
+[掌声]
+
+Collins-Sussman: We got 15 minutes.
+Collins-Sussman：我们还有 15 分钟时间。
+
+Fitzpatrick: Yeah, we have some time for questions and answers.
+Fitzpatrick：是的，我们有一些时间来提问和回答。
+
+So if anyone has any questions or preferably answers,
+因此，如果有人有任何问题或希望得到答案，房间中央
+
+there are some mics in the center of the room.
+有一些麦克风。
+
+If you could get up there and...
+如果你能站起来……
+
+Collins-Sussman: Uh-oh, two at once.
+Collins-Sussman：呃-哦，同时两个。
+
+Fitzpatrick: Protocol. Okay.
+菲茨帕特里克：协议。 好的。
+
+man: Two questions-- one for the audience, actually.
+男：两个问题——实际上，一个是问观众的。
+
+Who would consider themselves a pair programmer?
+谁会认为自己是结对程序员？
+
+Fitzpatrick: See, they can't get their hands all the way up.
+Fitzpatrick：看，他们无法将手完全举起来。
+
+[laughter]
+[笑声]
+
+man: And the same question to you guys, really.
+男人：对你们来说也是同样的问题，真的。
+
+What do you think about pair programming,
+您对结对编程有
+
+kind of formally?
+什么正式的看法？
+
+Fitzpatrick: I personally think it's ideal
+Fitzpatrick：我个人认为，
+
+if you're working on something really difficult.
+如果你正在做一些非常困难的事情，那么这是理想的选择。
+
+When I wrote CVS to SVN,
+当我将 CVS 写入 SVN 时，
+
+which is probably one of the hardest things
+这可能是我一生中做过的最困难的事情之一——
+
+I've ever worked on in my life--
+
+
+I learned more about CVS and RCS than I wanted to learn ever.
+我对 CVS 和 RCS 的了解比我想要了解的还要多。
+
+Karl Fogel and I did a lot of pair programming.
+Karl Fogel 和我做了很多结对编程。
+
+It was really good,
+这真的很好，
+
+because it was really grungy, difficult problems.
+因为这确实是一些又脏又困难的问题。
+
+But for sort of day to day,
+但对于日常工作来说，
+
+I prefer more of the write-code-review process.
+我更喜欢编写代码审查过程。
+
+Collins-Sussman: It creates social stress, right?
+Collins-Sussman：它会造成社会压力，对吗？
+
+If you're pair-programming with somebody,
+如果您与某人结对编程，那么
+
+you better be really-- know each other really well
+您最好非常了解彼此，
+
+and be very tolerant of each other's quirks, right?
+并且能够非常容忍彼此的怪癖，对吗？
+
+Otherwise, it can actually-- you can start arguing
+否则，你实际上可以开始争论
+
+about whoever's driving, right?
+谁开车，对吧？
+
+"Don't format the code that way."
+“不要以这种方式格式化代码。”
+
+Or, "Don't you know that shortcut?"
+或者，“你不知道那个捷径吗？”
+
+Or, you know, it can get a little maddening.
+或者，你知道，这可能会让人有点抓狂。
+
+Fitzpatrick: There's a number of really good engineers at Google
+Fitzpatrick：谷歌有很多非常优秀的工程师，他们一直在
+
+who pair-program all the time, and they do a great job of it,
+结对编程，他们做得很好，
+
+and they're amazingly productive.
+而且生产力惊人。
+
+man: Thanks. Fitzpatrick: Yeah.
+男人：谢谢。菲茨帕特里克：是的。
+
+man: So advice on dealing with egos,
+男人：所以关于处理自我的建议，
+
+'cause I agree with you guys,
+因为我同意你们的观点，
+
+but there's definitely people on the team
+但是团队中肯定有人，
+
+that, you know, their ego is always in the way.
+你知道，他们的自我总是阻碍。
+
+Fitzpatrick: Advice on dealing with egos.
+菲茨帕特里克：关于处理自我的建议。
+
+Collins-Sussman: What is the advice?
+柯林斯-萨斯曼：有什么建议？
+
+Fitzpatrick: How do you deal with people that have a big ego?
+菲茨帕特里克：你如何与自负的人打交道？
+
+Is that the question? Wow.
+这是问题吗？哇。
+
+Um...pass.
+嗯……通过。
+
+No, I'm kidding. [laughter]
+不，我在开玩笑。[笑声]
+
+That's a hard question, because...
+这是一个很难回答的问题，因为……
+
+typically if they're running the project, they'll--
+通常，如果他们正在运行这个项目，他们会——
+
+Again, like attracts like, okay?
+再说一遍，物以类聚，好吗？
+
+People who are sort of the friendlier, nicer,
+那些更友善、更友善、能达成
+
+consensus-building people
+共识的人
+
+are gonna attract people that like to work with that.
+会吸引那些喜欢与之合作的人。
+
+People who are the big, you know, ego--
+你知道，那些自负的人——
+
+"It's about me. Let's be aggressive here.
+“这是关于我的。让我们在这里表现出攻击性。
+
+I'm the alpha male. Let's fight about things."
+我是雄性领袖。让我们为一些事情而争吵。”
+
+Collins-Sussman: They attract other alphas.
+Collins-Sussman：他们吸引其他阿尔法。
+
+Fitzpatrick: Exactly. They're gonna attract other people
+菲茨帕特里克：没错。 他们会吸引其他
+
+that either want to follow them and be like,
+想要追随他们的人，并说：
+
+"Oh, yes, you're right. Wonderful."
+“哦，是的，你是对的。太棒了。”
+
+Or they're people that just want to fight them,
+或者他们只是想与他们战斗，
+
+because that's what they want to do.
+因为这就是他们想做的事。
+
+So I don't know I'd have a particular recipe--
+所以我不知道我会有什么特别的秘诀——如果你寻找“有毒的人”，
+
+We have another talk that you can find on YouTube,
+我们还有另一个演讲，你可以在 YouTube 上找到，
+
+if you look for "poisonous people,"
+
+
+that talks all about how to protect your project
+它全部讨论了如何保护你的项目免受
+
+from poisonous people.
+有毒的人的侵害。
+
+So there's a little plug for that.
+所以有一个小插头。 事实上，
+
+We gave it here last year, actually.
+我们去年就在这里提供了它。
+
+Collins-Sussman: That's actually probably the best prescription
+Collins-Sussman：实际上，我们拥有的最好的处方可能就是
+
+we have is that talk.
+那次谈话。
+
+It's just how to deal with difficult people in general
+这只是如何应对项目中一般难相处的人
+
+on your project.
+。
+
+Fitzpatrick: Yeah.
+菲茨帕特里克：是的。
+
+Next question. man: Hello.
+下一个问题。男：你好。
+
+Fitzpatrick: Hello.
+菲茨帕特里克：你好。
+
+man: Let's see if we can deal
+男：如果您同意的话，我们看看是否可以处理
+
+with some constructive criticism here, if it's okay with you.
+一些建设性的批评。
+
+Fitzpatrick: Yeah.
+菲茨帕特里克：是的。
+
+man: It sounds to me like what you're saying
+男人：在我看来，你所说的
+
+is almost like humanistically programming,
+几乎就像人文编程，
+
+which is fine,
+这很好，
+
+except what it relates--
+除了它所涉及的——
+
+you have to be in a certain kind of environment.
+你必须处于某种环境中。
+
+And maybe your company has set up a certain kind of environment
+也许你的公司在某个时间阶段已经建立了某种环境，
+
+at a certain stage in time
+
+
+that this kind of way of dealing with things works.
+这种处理方式是有效的。
+
+But in a different kind of environment--
+但在不同的环境中——
+
+that is, the majority of the world--
+即世界上的大多数地方——
+
+I feel that a lot of the things you're talking about,
+我觉得你所说的很多事情，
+
+people are gonna get crucified.
+人们都会被钉在十字架上。
+
+And I'm not saying that's bad or good.
+我并不是说这是坏事还是好事。
+
+I'm just saying that's the reality of things.
+我只是说这就是事实。
+
+It's like when I talked to Kent Beck,
+就像八年前我和 Kent Beck
+
+what, eight years ago about extreme programming,
+谈论极限编程时，班上
+
+the problem with all the guys in the class was,
+所有同学的问题是，
+
+"Nobody's gonna--I'm gonna take this back to my company,
+“没有人会——我会把这个带回我的公司，
+
+and nobody's gonna want to do this."
+没有人会愿意 做这个。”
+
+So my first thing is that you have to be very careful
+所以我的第一件事是，你在
+
+about applying these things,
+应用这些东西时必须非常小心，
+
+because you go back and do these things,
+因为你回去做这些事情，在特定的环境中
+
+and you're gonna get in a lot of trouble
+你会遇到很多麻烦
+
+in a certain environment.
+。
+
+Secondly, the no-ego thing is great.
+其次，无自我是伟大的。
+
+We'll just send everyone off to a Zen center for a year.
+我们会把每个人都送到禅宗中心一年。
+
+[laughter] You know?
+[笑声]你知道吗？
+
+People have egos. I'm a psychologist for 30 years.
+人们有自我。我从事心理学家工作 30 年。
+
+I deal with people, and that's real.
+我与人打交道，这是真实的。
+
+That's an ego thing.
+那是自我的事情。
+
+Thirdly, there's plenty of evidence that there are geniuses
+第三，有大量证据表明
+
+in the world.
+世界上存在天才。
+
+I think that's obvious.
+我认为这是显而易见的。
+
+And there's plenty of evidence that there's a whole range
+有大量证据表明，有很多
+
+of people that are good at programming.
+人都擅长编程。
+
+Some people are good. There's a fair amount of research
+有些人很好。 有相当多的研究
+
+that talks about the great programmers
+表明，伟大的程序员的
+
+can write 100 times better--
+写作能力可以提高 100 倍——
+
+Fitzpatrick: I'm gonna stop you there.
+Fitzpatrick：我要阻止你了。
+
+I don't disagree with you on that--Can you hold on a second?
+在这一点上我不同意你的观点——你能稍等一下吗？
+
+I don't disagree with you.
+我不同意你的观点。
+
+I'd be glad to talk to you a little more offline.
+我很高兴能在线下与您进一步交谈。
+
+"The genius is a myth" thing
+“天才是神话”这句话
+
+is definitely a straw man that we're setting up.
+绝对是我们编造的稻草人。
+
+There are geniuses,
+天才是有的，
+
+but the point we're trying to make precisely
+但我们要明确指出的是，天才的
+
+is that there are remarkably few.
+数量非常少。 数量
+
+There are far fewer than most people realize.
+比大多数人意识到的要少得多。
+
+And I think our talk is much more aimed
+我认为我们的谈话更多地
+
+at people who are able to control their project
+针对那些能够控制他们的项目
+
+or their environment.
+或环境的人。
+
+If you're in a corporate environment
+如果您处于公司环境中
+
+or something where you have no control
+或无法控制
+
+over the actual way the software is developed,
+软件开发的实际方式的环境中，那么
+
+you're gonna have a very hard time doing that.
+您将很难做到这一点。
+
+And you're right. You might get crucified.
+你是对的。你可能会被钉在十字架上。
+
+And our legal staff has asked me to say
+我们的法律人员要求我声明
+
+this is not medical advice.
+这不是医疗建议。
+
+[laughter] And please be careful.
+[笑声]请小心。
+
+But please, we'd love to talk to you more
+但是，我们很乐意稍后亲自与您讨论更多
+
+about it afterwards in person. Thanks.
+相关事宜。谢谢。
+
+Collins-Sussman: We're describing the ideal here,
+Collins-Sussman：我们在这里描述的是理想状态，
+
+right?
+对吗？
+
+Getting from the ideal, actually implementing that,
+从理想出发，实际实现它，
+
+making it happen, is a whole separate problem.
+使其成为现实，是一个完全独立的问题。
+
+Fitzpatrick: Right. I mean, we deal with the Open Source world,
+菲茨帕特里克：对。 我的意思是，我们首先处理的是开源世界
+
+for starters.
+。
+
+And then coming to Google,
+然后来到谷歌，
+
+it's run inside like a whole bunch of Open Source projects,
+它在很大程度上就像一大堆开源项目一样在内部运行
+
+to some great extent.
+。
+
+So it's a similar sort of gestalt.
+所以这是一种类似的格式塔。
+
+Collins-Sussman: Right. Fitzpatrick: Next question.
+柯林斯-萨斯曼： 是的。菲茨帕特里克：下一个问题。
+
+man: Hi. I hope this will be interesting to many people.
+男人：嗨。 我希望这会让很多人感兴趣。
+
+So you mentioned being a small fish.
+所以你提到是一条小鱼。
+
+Do you have any advice of--
+你有什么建议吗——
+
+So if you're in an environment where you're not a small fish,
+如果你所处的环境不是一条小鱼，
+
+so how to change that,
+那么如何改变这种状况，当然是在
+
+without leaving the environment, of course.
+不离开环境的情况下。
+
+Or how to find other ways
+或者如何找到其他方法
+
+to improve your skills.
+来提高你的技能。
+
+Collins-Sussman: So the question is, "If you're a small fish,
+柯林斯-萨斯曼：所以问题是，“如果你是一条小鱼，
+
+how do you deal with-- how do you become a big fish?"
+你如何应对——如何成为一条大鱼？”
+
+Sorry, if you're a big fish, how do you become a small fish?
+对不起，如果你是一条大鱼，你怎么变成一条小鱼呢？
+
+Fitzpatrick: You hire bigger fish.
+菲茨帕特里克：你雇佣更大的鱼。
+
+Collins-Sussman: That's it.
+柯林斯-萨斯曼：就是这样。
+
+If you're talking about in a corporate environment,
+如果你说的是在公司环境中，
+
+if I were in that situation,
+如果我处于那种情况，
+
+I would start looking around for bigger fish, right?
+我会开始四处寻找更大的鱼，对吧？
+
+"Where are the really hard projects?
+“真正困难的项目在哪里？
+
+"Where are the people who are much more knowledgeable than me?
+”比我知识渊博得多的人在哪里？
+
+How can I somehow get involved with what they're doing," right?
+我怎样才能以某种方式参与他们正在做的事情，”对吗？
+
+And maybe it's just slow involvement at first,
+也许一开始只是缓慢参与，
+
+but try to sort of creep your career in that direction,
+但尝试让你的职业生涯朝这个方向发展，
+
+because if you're not being challenged,
+因为如果你没有受到挑战，
+
+if you're not a little bit scared all the time,
+如果你 不要一直害怕一点点，
+
+just a little bit, then you're not gonna improve.
+只是一点点，那么你就不会进步。
+
+Now, I mean, I--
+现在，我的意思是，我--
+
+That's not a guaranteed solution.
+这不是一个有保证的解决方案。
+
+Sometimes you may be trapped,
+有时你可能会被困住，
+
+in which case, I guess I might just go look for another job.
+在这种情况下，我想我可能会去找另一份工作吧。
+
+If I were truly bored at my job, right?
+如果我真的对自己的工作感到无聊，对吧？
+
+Fitzpatrick: Right. In the Open Source world,
+Fitzpatrick：对。在开源世界中，
+
+you know, you typically want to attract
+你知道，你通常希望吸引
+
+these kind of people and projects.
+这类人和项目。
+
+So if you're-- If it's built on consensus
+所以如果你——如果它建立在共识的基础上，
+
+and other people can still come in and have an influence,
+并且其他人仍然可以加入并产生影响，
+
+that's typically what will attract the bigger fish.
+这通常会吸引更大的鱼。
+
+man: So you're saying if you can change
+男人：所以你是说，如果你可以改变
+
+your corporate environment,
+你的公司环境，基本上
+
+start an Open Source project, basically.
+启动一个开源项目。
+
+Fitzpatrick: Again, corporate environments--
+菲茨帕特里克 ：再说一次，企业环境——
+
+it's really risky.
+这真的很危险。
+
+If you are one of the small fish
+如果你是小鱼之一，
+
+or, like, you're just an engineer on a large project,
+或者，你只是一个大项目的工程师，
+
+you know, you have no power to change that necessarily.
+你知道，你没有权力去改变这一点。
+
+You can do what you do,
+你可以做你所做的事情，
+
+but you're not gonna be able to guide a project
+但你无法
+
+from that seat that you're in.
+从你所处的位置指导一个项目。
+
+Collins-Sussman: If you're a big fish in a corporation,
+Collins-Sussman：如果你是一家公司的大鱼，
+
+you probably do have a lot of power
+你可能确实有很多 有能力
+
+to start migrating your career
+开始将你的职业生涯
+
+towards other bigger fish, right?
+转向其他更大的鱼，对吗？
+
+Fitzpatrick: Right. Collins-Sussman: It's possible.
+菲茨帕特里克：对。柯林斯-萨斯曼：这是可能的。
+
+Fitzpatrick: Next question, please.
+菲茨帕特里克：请下一个问题。
+
+man: Hi. You talked about avoiding a low bus factor
+男人：嗨。 您谈到了避免低总线系数
+
+and having as many people look
+并让尽可能多的人查看
+
+at as many pieces of code as possible.
+尽可能多的代码。
+
+And you talked about it in the context
+你在
+
+of people being egotistical and wanting to own a piece of code
+人们以自我为中心并希望拥有一段代码
+
+and no one else touch it.
+而没有其他人接触它的背景下谈论了它。
+
+But I think there's a practical factor there.
+但我认为其中有一个实际因素。
+
+When you have a big project with few people,
+当你有一个只有很少人的大项目时，
+
+that the more proficient someone is with a component,
+某人对组件越熟练，
+
+the more quickly they can implement features
+他们实现功能
+
+or solve bugs.
+或解决错误的速度就越快。
+
+And if everyone spreads themselves too thin, maybe...
+如果每个人都把自己分散得太薄，也许……
+
+maybe development would slow down.
+也许发展会减慢。
+
+I don't know.
+我不知道。
+
+I feel like this is true on my project
+我觉得这对我的项目
+
+and my work experience.
+和我的工作经验来说是正确的。
+
+I feel like when bugs come in, we want to assign it
+我觉得当出现错误时，我们希望将其分配
+
+to the person who knows that component best.
+给最了解该组件的人。
+
+They can fix it fastest.
+他们可以最快地修复它。
+
+But we've thought about maybe purposely assigning bugs
+但我们考虑过故意将错误分配
+
+to people who know it less to help spread knowledge.
+给不太了解的人，以帮助传播知识。
+
+Is that a good idea, or is this concern completely false
+这是一个好主意，还是这种担忧完全是错误的，
+
+and just coming out of ego?
+只是出于自我？
+
+Collins-Sussman: I think there's a tension there,
+Collins-Sussman：我认为那里存在紧张气氛，
+
+like you said, right?
+就像你说的，对吧？
+
+The fastest thing to do
+最快的事情
+
+is to have the people who know the code best work on it, right?
+就是让最了解代码的人来处理它，对吗？
+
+But you need to sort of find a balance, right?
+但你需要找到一个平衡点，对吧？
+
+Where you're balancing short term versus long term.
+您需要平衡短期与长期。
+
+In the short term,
+从短期来看，
+
+it's best to have the experts work on the code they know,
+最好让专家处理他们知道的代码，
+
+'cause it'll get done faster, right?
+因为它会更快地完成，对吗？
+
+In the long term, though, you want to occasionally,
+但是，从长远来看，您偶尔会希望，
+
+like you said, maybe have someone
+就像您所说的那样，也许让
+
+who doesn't know that code as well
+不知道该代码的人也与知道该代码的人
+
+pair-program a bug fix with somebody who does,
+结对编程错误修复，
+
+or give somebody a small task in that foreign area of code,
+或者给某人一个在该外国领域的小任务。 代码，
+
+which isn't particularly time-critical,
+这对时间不是特别严格，
+
+but will give that person some experience with the code
+但会给那个人一些代码经验，
+
+so that if the expert does get hit by a bus,
+这样如果专家确实被公共汽车撞到了，
+
+you'll be covered for the long term.
+你将得到长期的保障。
+
+So, yeah, it's about risk management, right?
+所以，是的，这与风险管理有关，对吧？
+
+Short and long term.
+短期和长期。
+
+Fitzpatrick: And we're certainly not advocating
+Fitzpatrick：我们当然不主张
+
+that everyone on your project
+项目中的每个人都
+
+knows how to do absolutely everything in the code base.
+知道如何完成代码库中的所有操作。
+
+There's ways of improving your bus factor
+有多种方法可以提高总线系数，而
+
+without actually making everyone into a generalist,
+无需真正让每个人都成为多面手，
+
+and that is good solid documentation
+这是
+
+in code and comments, design docs,
+代码和注释、设计文档
+
+and then just general documentation.
+以及一般文档中良好可靠的文档。
+
+Collins-Sussman: And code review, right?
+Collins-Sussman：还有代码审查，对吧？
+
+If one person--If there's code review going on,
+如果一个人——如果正在进行代码审查，
+
+then it's really pretty much impossible for one person
+那么一个人几乎不可能
+
+to know an area of code.
+了解某一区域的代码。
+
+Somebody must've reviewed that code
+一定有人审查过
+
+that went in there, right?
+其中的代码，对吗？
+
+At least have a cursory knowledge.
+至少有一个粗略的认识。
+
+Fitzpatrick: Next question, please,
+Fitzpatrick：请在前面提出下一个问题
+
+in front.
+。
+
+man: Uh, yes.
+男人：呃，是的。
+
+You were talking about technological solutions
+您正在谈论社会问题的技术解决方案
+
+for social problems.
+。
+
+And you mentioned that Git
+你提到 Git
+
+and other distributed systems have this problem
+和其他分布式系统有这个问题，
+
+where the first thing you do is fork.
+你做的第一件事就是 fork。
+
+But I wonder if--And I don't want to put you on the spot,
+但我想知道是否——我不想让你难堪，
+
+'cause I think this must be some sort of competitor of yours,
+因为我认为这一定是你的某种竞争对手，
+
+but GitHub has taken that model
+但 GitHub已经采用了这种模式
+
+and sort of mushed it together, so it's both--
+并将其混合在一起，所以两者都是——  -
+
+You fork, but when you fork,
+你分叉，但是当你分叉时，
+
+somebody else can see that you forked their code.
+其他人可以看到你分叉了他们的代码。
+
+And we've had cases where I work lately
+我们最近工作过一些案例，
+
+where we have fixed something, and the next day
+我们修复了一些东西，第二天
+
+it would get pulled back into the main branch.
+它就会被拉回主分支。
+
+So I wonder, you know, how you think about that.
+所以我想知道，你是如何看待这个问题的。
+
+And maybe even if you could-- if Google Code was thinking
+也许即使你可以——如果 Google Code 正在考虑朝
+
+about going somewhere in that direction.
+这个方向发展。
+
+Collins-Sussman: Well, Google Code
+Collins-Sussman：嗯，Google Code 现在
+
+actually supports Mercurial now.
+实际上支持Mercurial。
+
+And, yes, we are working
+是的，我们正在研究
+
+on the whole sort of server-side clones, much like GitHub.
+整个服务器端克隆，就像 GitHub 一样。
+
+I think that's gonna be coming.
+我想那将会到来。
+
+[man speaking indistinctly]
+[男子含糊其辞]
+
+It's not deployed yet, but, yeah, it would be--
+它还没有部署，但是，是的，
+
+it's definitely on our road map to sort of have, you know--
+它肯定在我们的路线图上，你知道，
+
+having users be able to clone repositories on the site
+让用户能够克隆网站上的存储库
+
+and do polls from them the same way GitHub does.
+并从它们中进行民意调查 与GitHub 的做法相同。
+
+But I was saying there's a balance, right?
+但我是说有一个平衡，对吗？
+
+Yeah, people start out forking, but on the other hand,
+是的，人们开始分叉，但另一方面，与
+
+it's a much lower barrier to participation
+
+
+than with a centralized system.
+中心化系统相比，参与的障碍要低得多。
+
+So I think it balances out, right?
+所以我认为这是平衡的，对吗？
+
+Or maybe it's even better in the long run
+或者从长远来看，
+
+for participation.
+参与可能会更好。
+
+Fitzpatrick: We have one last question it looks like.
+Fitzpatrick：我们还有最后一个问题。
+
+man: Hi.
+男人：嗨。
+
+You did give a very nice talk--
+你确实做了一次非常精彩的演讲--
+
+Fitzpatrick: Into the microphone, please.
+Fitzpatrick：请对着麦克风。
+
+man: Yeah. You did give a very nice talk
+男人：是的。 您确实就
+
+about how you should be to pick up team enrollment.
+应该如何进行团队注册进行了非常好的演讲。
+
+But usually what when you're working on one reserve,
+但通常情况下，当你在一个保护区工作时，
+
+when you start implementing what you just talked about,
+当你开始实施你刚才谈到的事情时，你
+
+it's not just someone becoming a genius,
+不仅会成为天才，
+
+but you become a guinea pig.
+而且会成为一只小白鼠。
+
+Your manager wants you to write more code.
+您的经理希望您编写更多代码。
+
+Your peers look up to you, even though you are a small fish.
+即使你是一条小鱼，你的同龄人也会尊敬你。
+
+Just out of college, you know, they expect you--
+刚从大学毕业，你知道，他们期望你——
+
+You know all this, and I'll just bring up
+你知道这一切，我只会提出
+
+a magical solution and, of course--
+一个神奇的解决方案，当然——
+
+It's like a little bug trying to pull an airplane.
+这就像一只试图拉飞机的小虫子。
+
+And then you're kind of in that limbo,
+然后你就陷入了一种困境，
+
+where you want a code, but you're afraid of coding.
+你想要一个代码，但你害怕编码。
+
+And the more you code, your manager wants you to code more,
+你编写的代码越多，你的经理就会希望你编写更多的代码，
+
+and then suddenly, you start to dream code.
+然后突然间，你开始梦想编写代码。
+
+Your girlfriend becomes angry at you
+你的女朋友
+
+because you forget about her.
+因为你忘记了她而对你生气。
+
+Your mother complains because you're not calling her.
+你妈妈抱怨是因为你没有给她打电话。
+
+So all these psychological problems come up.
+所以所有这些心理问题都会出现。
+
+So how do you actually think about this?
+那么你实际上是如何看待这个问题的呢？
+
+Fitzpatrick: We have another talk in five minutes
+菲茨帕特里克：五分钟后我们将再次讨论
+
+on how to replace your manager.
+如何更换你的经理。
+
+[laughter] No, I'm just kidding.
+[笑声]不，我只是在开玩笑。
+
+Collins-Sussman: Hmm. I don't think I've seen that situation.
+柯林斯-萨斯曼：嗯。 我想我没见过那种情况。
+
+Are you talking about the general pressure
+您是在谈论
+
+to write more code?
+编写更多代码的普遍压力吗？
+
+I mean, I guess I don't quite understand.
+我的意思是，我想我不太明白。
+
+Fitzpatrick: I think it's a pressure from management
+菲茨帕特里克：我认为这是来自管理层的压力，要求以
+
+to behave in one way
+某种方式行事，
+
+when it's not necessarily better for the team.
+而这种方式不一定对团队更好。
+
+Is that the general gist of what you're talking about?
+这是你所说的一般要点吗？
+
+man: It's just a matter of becoming a guinea pig.
+男人：这只是成为一只小白鼠的问题。
+
+You are the one--
+你就是那个——
+
+You become a victim of experimentalization.
+你成为实验的受害者。
+
+Fitzpatrick: Right. So...
+菲茨帕特里克：对。 所以...
+
+Collins-Sussman: Wow. I don't know.
+Collins-Sussman： 哇。我不知道。
+
+Fitzpatrick: We don't have a solution for that.
+Fitzpatrick：我们没有解决方案。
+
+Collins-Sussman: I think we're out of time.
+Collins-Sussman：我想我们已经没时间了。
+
+Fitzpatrick: I think we're out of time.
+Fitzpatrick：我想我们已经没时间了。
+
+Collins-Sussman: Darn. Rats.
+柯林斯-萨斯曼：该死。 老鼠。
+
+Fitzpatrick: Thanks to everybody for coming.
+Fitzpatrick：感谢大家的到来。
+
+[applause]
+[掌声]
