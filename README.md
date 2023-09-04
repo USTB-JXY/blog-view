@@ -4,7 +4,7 @@
 #  The Myth of the Genius Programmer
 2023/09/03 Google I/O 2009 - The Myth of the Genius Programmer https://www.youtube.com/watch?v=0SARbwvhupQ  
 
-[双语字幕](./view/The-Myth-of-the-Genius-Programmer(双语).txt) 
+[双语字幕](./view/The-Myth-of-the-Genius-Programmer(双语).txt)   
  Brian Fitzpatrick.  Ben Collins-Sussman.
 
  Brian Fitzpatrick has over 20 years of experience building and running software engineering teams. Prior to joining Tock he started Google's Chicago engineering office, conceived and launched several key Google policy products, and acted as a spokesperson for the company. Fitz also led teams at Apple, wrote several books on softwareengineering and collaboration, and is a longtime member of the Apache Software Foundation.
