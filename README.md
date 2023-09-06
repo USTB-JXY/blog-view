@@ -1,4 +1,4 @@
-# jxy blog and view
+# blog and view
 我的个人博客，笔记，文章，随笔
 
 #  The Myth of the Genius Programmer
